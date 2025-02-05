@@ -1,4 +1,5 @@
 import Icon from "@/components/Icon/Icon";
+import ModalReviewAdd from "@/components/Modal/ModalReviewAdd/ModalReviewAdd";
 
 export default function GiyeonTest() {
   return (
@@ -49,6 +50,9 @@ export default function GiyeonTest() {
           <Icon name="visibility" size={40} />
           <Icon name="unVisibility" size={40} />
         </div>
+      </div>
+      <div>
+        <ModalReviewAdd />
       </div>
     </>
   );
