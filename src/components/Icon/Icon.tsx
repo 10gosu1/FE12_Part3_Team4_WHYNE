@@ -23,6 +23,7 @@ type IconProps = {
   name: keyof typeof IconData;
   size: number;
   className?: string;
+  viewBox?: string;
   onClick?: () => void;
 };
 
@@ -30,6 +31,7 @@ export default function Icon({
   name,
   size = 24,
   className,
+  viewBox = "0 0 40 40",
   onClick,
 }: IconProps) {
   const icon = IconData[name];
@@ -42,7 +44,7 @@ export default function Icon({
     <svg
       width={size}
       height={size}
-      viewBox="0 0 40 40"
+      viewBox={viewBox}
       xmlns="http://www.w3.org/2000/svg"
       className={`fill-current ${className}`}
       onClick={onClick}
