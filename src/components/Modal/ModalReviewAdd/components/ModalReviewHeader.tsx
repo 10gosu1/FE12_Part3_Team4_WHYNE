@@ -1,37 +1,21 @@
-import { useEffect } from "react";
+"use client";
+import Icon from "@/components/Icon/Icon";
 
 type ModalReviewAddProps = {
-  isOpen: boolean;
   onClose: () => void;
-  children: React.ReactNode;
 };
 
-export default function ModalReviewHeader({
-  isOpen,
-  onClose,
-  children,
-}: ModalReviewAddProps) {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
-    } else {
-      document.removeEventListener("keydown", handleKeyDown);
-    }
-
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
+export default function ModalReviewHeader({ onClose }: ModalReviewAddProps) {
   return (
-    <div>
-      <h1>리뷰 등록</h1>
+    <div className="flex flex-row justify-between items-center w-full">
+      <h1 className="text-2xl-24px-bold">리뷰 등록</h1>
+      <Icon
+        className="text-gray-500 cursor-pointer "
+        name="close"
+        size={34}
+        viewBox="0 0 24 24"
+        onClick={onClose}
+      />
     </div>
   );
 }

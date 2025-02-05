@@ -1,12 +1,41 @@
+"use client";
 import { useEffect } from "react";
-import ModalReviewForm from "./components/ModalReviewForm";
 import ModalReviewHeader from "./components/ModalReviewHeader";
 
-export default function ModalReviewAdd() {
+// import ModalReviewForm from "./components/ModalReviewForm";
+// import ModalReviewHeader from "./components/ModalReviewHeader";
+
+type ModalReviewAddProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export default function ModalReviewAdd({
+  isOpen,
+  onClose,
+}: ModalReviewAddProps) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // 키보드 esc눌러서 모달창 닫을 수 있음.
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
   return (
-    <div>
-      <ModalReviewHeader />
-      <ModalReviewForm />
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 ">
+      <div className="flex flex-row max-w-528px p-6 rounded-lg bg-white shadow-lg ">
+        <ModalReviewHeader onClose={onClose} />
+      </div>
     </div>
   );
 }
