@@ -15,6 +15,8 @@ import {
 
 import { GnbLayout } from "@/components/Gnb";
 
+import ModalWineAdd from "@/components/Modal/ModalWineAdd/ModalWineAdd";
+
 export default function HyeseonTest() {
   // InputSearch 테스트용
   const handleSearch = (keyword?: string) => {
@@ -28,6 +30,9 @@ export default function HyeseonTest() {
     console.log("선택한 파일:", file);
   };
 
+  // ModalWineAdd 테스트용
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
       <GnbLayout />
@@ -37,10 +42,7 @@ export default function HyeseonTest() {
         <br />
         <br />
         <Label htmlFor="select">InputSelect</Label>
-        <InputSelect
-          options={["Option 1", "Option 2", "Option 3"]}
-          selectedValue=""
-        >
+        <InputSelect options={["Red", "White", "Sparkling"]} selectedValue="">
           선택하세요
         </InputSelect>
         <br />
@@ -64,6 +66,18 @@ export default function HyeseonTest() {
         <br />
         <Label htmlFor="file">프로필 사진 업로드</Label>
         <InputProfileImage />
+      </div>
+      <div className="mt-[40px]">
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded-md"
+          onClick={() => setIsModalOpen(true)}
+        >
+          모달 열기
+        </button>
+        <ModalWineAdd
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </div>
     </>
   );
