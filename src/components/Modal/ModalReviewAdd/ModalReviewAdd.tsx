@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import ModalReviewHeader from "./components/ModalReviewHeader";
+import ModalReviewForm from "./components/ModalReviewForm";
 
 // import ModalReviewForm from "./components/ModalReviewForm";
 // import ModalReviewHeader from "./components/ModalReviewHeader";
@@ -33,8 +34,9 @@ export default function ModalReviewAdd({
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 ">
-      <div className="flex flex-row w-full max-w-[528px]  p-6 rounded-lg bg-white shadow-lg ">
+      <div className="flex flex-col w-full max-w-[528px]  p-6 rounded-lg bg-white shadow-lg ">
         <ModalReviewHeader onClose={onClose} />
+        <ModalReviewForm />
       </div>
     </div>
   );
