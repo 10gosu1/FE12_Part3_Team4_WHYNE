@@ -1,4 +1,4 @@
-import clsx from "clsx";
+"use client";
 
 /**
  * ✅ 공통 버튼 컴포넌트
@@ -8,12 +8,12 @@ import clsx from "clsx";
  * - `className`: 추가적인 Tailwind 스타일 적용 가능
  */
 interface ButtonProps {
-  children: React.ReactNode; // 버튼 내부의 텍스트 또는 요소
-  onClick?: () => void; // 클릭 이벤트 핸들러
-  variant?: "button" | "social" | "modal" | "modalCancel"; // 버튼 스타일 종류
-  size?: "sm" | "lg"; // 버튼 크기
-  disabled?: boolean; // 버튼 비활성화 여부
-  className?: string; // 추가적인 클래스 스타일 적용
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: "button" | "social" | "modal" | "modalCancel";
+  size?: "sm" | "lg";
+  disabled?: boolean;
+  className?: string;
 }
 
 export default function Button({
@@ -50,13 +50,13 @@ export default function Button({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={clsx(
-        baseStyles,
-        variantStyles[variant],
-        sizeStyles[size],
-        className,
-        { "opacity-50 cursor-not-allowed": disabled }
-      )}
+      className={`
+        ${baseStyles} 
+        ${variantStyles[variant]} 
+        ${sizeStyles[size]} 
+        ${className || ""} 
+        ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+      `}
     >
       {children}
     </button>
