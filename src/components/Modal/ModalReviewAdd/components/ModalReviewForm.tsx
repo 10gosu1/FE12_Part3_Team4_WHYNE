@@ -20,6 +20,8 @@ export default function ModalReviewForm() {
     smoothTannic: 0,
     drySweet: 0,
     softAcidic: 0,
+    aroma: [],
+    wineId: 0,
   });
   return (
     <div className="flex flex-col gap-10">
@@ -45,7 +47,10 @@ export default function ModalReviewForm() {
           setValues((prev) => ({ ...prev, softAcidic }))
         }
       />
-      <ModalReviewSmell />
+      <ModalReviewSmell
+        aroma={values.aroma}
+        setAroma={(aroma) => setValues((prev) => ({ ...prev, aroma }))}
+      />
       <Button>리뷰 남기기</Button>
     </div>
   );
