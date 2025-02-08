@@ -13,7 +13,16 @@ import { useState } from "react";
 // 리팩토링때 좀 더 쉬운 방법 고안.
 
 export default function ModalReviewForm() {
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<{
+    rating: number;
+    content: string;
+    lightBold: number;
+    smoothTannic: number;
+    drySweet: number;
+    softAcidic: number;
+    aroma: string[];
+    wineId: number;
+  }>({
     rating: 0,
     content: "",
     lightBold: 0,
