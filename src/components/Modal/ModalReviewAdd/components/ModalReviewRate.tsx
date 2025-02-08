@@ -8,6 +8,8 @@ type ModalReviewRateProps = {
   setRating: (value: number) => void;
   content: string;
   setContent: (value: string) => void;
+  name: string;
+  image: string;
 };
 
 export default function ModalReviewRate({
@@ -15,13 +17,9 @@ export default function ModalReviewRate({
   setRating,
   content,
   setContent,
+  name,
+  image,
 }: ModalReviewRateProps) {
-  // const params = useParams;
-  // const { id } = params;
-  // id를 이용해서 와인의 이미지와 이름을 Get해서 받아온다. 받아온 이미지와 이름을 출력.
-
-  const image = undefined; //임시 추후 삭제
-  const name = undefined; //임시 추후 삭제
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-row gap-4">

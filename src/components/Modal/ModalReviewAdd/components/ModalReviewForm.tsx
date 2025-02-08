@@ -14,11 +14,11 @@ import axios from "axios";
 // 상태값들은 깊어야 2단계정도 prop으로 내려주기 때문에 context사용은 보류 3단계면 사용해야 한다고 판단.
 // 리팩토링때 좀 더 쉬운 방법 고안.
 
-type ModalReviewForm = {
+type ModalReviewFormProps = {
   onClose: () => void;
 };
 
-export default function ModalReviewForm({ onClose }) {
+export default function ModalReviewForm({ onClose }: ModalReviewFormProps) {
   const [wine, setWine] = useState<{
     id: number;
     name: string;
@@ -54,7 +54,7 @@ export default function ModalReviewForm({ onClose }) {
     const fetchWine = async () => {
       try {
         const response = await axios.get("/");
-        const { id, name, image } = response;
+        const { id, name, image } = response.data;
         setWine({ id, name, image });
       } catch (error) {
         console.error("와인 데이터를 가져오는 중 오류 발생:", error);
@@ -75,6 +75,8 @@ export default function ModalReviewForm({ onClose }) {
         setRating={(rating) => setValues((prev) => ({ ...prev, rating }))}
         content={values.content}
         setContent={(content) => setValues((prev) => ({ ...prev, content }))}
+        name={wine.name}
+        image={wine.image}
       />
       <ModalReviewFlavor
         lightBold={values.lightBold}
