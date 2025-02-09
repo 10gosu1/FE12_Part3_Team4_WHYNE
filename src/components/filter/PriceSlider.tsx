@@ -1,22 +1,28 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
-const PriceSlider = ({ minPrice = 0, maxPrice = 100000, setMinPrice, setMaxPrice }) => {
+const PriceSlider = () => {
   const sliderRef = useRef(null);
 
-  const handleMouseDown = (type) => (event) => {
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(100000);
+
+  const handleStart = (type) => (event) => {
     event.preventDefault();
     const slider = sliderRef.current;
     if (!slider) return;
 
-    const handleMouseMove = (moveEvent) => {
+    const isTouch = event.type === "touchstart";
+    const startEvent = isTouch ? event.touches[0] : event;
+    
+    const handleMove = (moveEvent) => {
+      const movePoint = isTouch ? moveEvent.touches[0] : moveEvent;
       const rect = slider.getBoundingClientRect();
-      const offsetX = moveEvent.clientX - rect.left;
+      const offsetX = movePoint.clientX - rect.left;
       const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1);
       let newValue = Math.round(percentage * 100000);
       
-      // 1000 단위로 반올림
       newValue = Math.round(newValue / 1000) * 1000;
       
       if (type === "min" && newValue < maxPrice - 1000) {
@@ -26,13 +32,15 @@ const PriceSlider = ({ minPrice = 0, maxPrice = 100000, setMinPrice, setMaxPrice
       }
     };
 
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+    const handleEnd = () => {
+      document.removeEventListener("mousemove", handleMove);
+      document.removeEventListener("mouseup", handleEnd);
+      document.removeEventListener("touchmove", handleMove);
+      document.removeEventListener("touchend", handleEnd);
     };
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener(isTouch ? "touchmove" : "mousemove", handleMove);
+    document.addEventListener(isTouch ? "touchend" : "mouseup", handleEnd);
   };
 
   return (
@@ -60,7 +68,8 @@ const PriceSlider = ({ minPrice = 0, maxPrice = 100000, setMinPrice, setMaxPrice
         <div
           role="button"
           tabIndex={0}
-          onMouseDown={handleMouseDown("min")}
+          onMouseDown={handleStart("min")}
+          onTouchStart={handleStart("min")}
           className="absolute w-[20px] h-[20px] bg-[#FFFFFF] rounded-full border border-[#6A42DB] cursor-pointer"
           style={{ left: `calc(${(minPrice / 100000) * 100}% - 10px)`, top: "50%", transform: "translateY(-50%)", zIndex: 10 }}
         ></div>
@@ -69,7 +78,8 @@ const PriceSlider = ({ minPrice = 0, maxPrice = 100000, setMinPrice, setMaxPrice
         <div
           role="button"
           tabIndex={0}
-          onMouseDown={handleMouseDown("max")}
+          onMouseDown={handleStart("max")}
+          onTouchStart={handleStart("max")}
           className="absolute w-[20px] h-[20px] bg-[#FFFFFF] rounded-full border border-[#6A42DB] cursor-pointer"
           style={{ left: `calc(${(maxPrice / 100000) * 100}% - 10px)`, top: "50%", transform: "translateY(-50%)", zIndex: 10 }}
         ></div>
