@@ -11,7 +11,13 @@ export default function Logo() {
   };
   return (
     <Link href="/" onClick={handleRefresh} className="cursor-pointer">
-      <Image width={52} height={15} src="/images/common/logo.svg" alt="로고" />
+      <Image
+        width={52}
+        height={15}
+        src="/images/common/logo.svg"
+        alt="로고"
+        priority
+      />
     </Link>
   );
 }

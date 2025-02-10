@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-//import axios from "axios";
 import Button from "@/components/Button/button";
 import { Input, InputFile, InputSelect, Label } from "@/components/Input";
+import { uploadImage } from "@/lib/api/image";
+import { createWine } from "@/lib/api/wine";
 
 type ModalWineFormProps = {
   onSubmit: (data: {
@@ -33,24 +34,6 @@ export default function ModalWineAddForm({
     setFile(file);
   };
 
-  // 이미지 업로드 함수 (수정해야함)
-  // const uploadImage = async (file: File): Promise<string> => {
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-
-  //   try {
-  //     const response = await axios.post("/images/upload", formData, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-  //     return response.data.imageUrl; // 서버에서 반환된 이미지 URL
-  //   } catch (error) {
-  //     console.error("이미지 업로드 실패", error);
-  //     throw new Error("이미지 업로드 실패");
-  //   }
-  // };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -58,18 +41,30 @@ export default function ModalWineAddForm({
 
     if (file) {
       try {
-        //imageUrl = await uploadImage(file); // 파일 있으면 업로드 후 URL 반환
+        imageUrl = await uploadImage(file);
       } catch (error) {
         console.error("이미지 업로드 실패:", error);
         return;
       }
     }
 
-    onSubmit({
-      ...formData,
-      price: formData.price === "" ? 0 : formData.price,
-      image: imageUrl, // 최종적으로 업로드 된 이미지 URL 저장
-    });
+    try {
+      await createWine({
+        name: formData.name,
+        region: formData.region,
+        image: imageUrl,
+        price: formData.price === "" ? 0 : formData.price,
+        type: formData.type.toUpperCase(),
+      });
+
+      onSubmit({
+        ...formData,
+        price: formData.price === "" ? 0 : formData.price,
+        image: imageUrl, // 최종적으로 업로드 된 이미지 URL 저장
+      });
+    } catch (error) {
+      console.error("와인 등록 실패", error);
+    }
   };
 
   return (

@@ -12,7 +12,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Icon from "../Icon/Icon";
 
-import { signIn } from "./SignInApi"; // 로그인 api 테스트
+import { signIn } from "@/lib/api/auth";
 
 export default function SignInForm() {
   const {
@@ -45,7 +45,7 @@ export default function SignInForm() {
 
   const onSubmit = async (data: SignInSchema) => {
     try {
-      const response = await signIn(data);
+      const response = await signIn(data.email, data.password);
       console.log("로그인 성공:", response);
 
       // 로그인 성공 후 홈으로 리디렉션

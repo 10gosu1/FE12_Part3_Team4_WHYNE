@@ -13,9 +13,8 @@ import {
   Label,
 } from "@/components/Input";
 
-import { GnbLayout } from "@/components/Gnb";
-
 import ModalWineAdd from "@/components/Modal/ModalWineAdd/ModalWineAdd";
+import Gnb from "@/components/Gnb";
 
 export default function HyeseonTest() {
   // InputSearch 테스트용
@@ -35,7 +34,7 @@ export default function HyeseonTest() {
 
   return (
     <>
-      <GnbLayout />
+      <Gnb />
       <div>
         <Label htmlFor="email">Input</Label>
         <Input type="email" placeholder="whyne@email.com" />

@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { signUpSchema, SignUpSchema } from "@/app/schemas/auth";
 import Button from "@/components/Button/button";
 import { Input, InputPassword, Label } from "@/components/Input";
 import Link from "next/link";
 import Image from "next/image";
 
-import { signUp } from "./SignUpApi"; // 회원가입 api 테스트
-import { useRouter } from "next/navigation";
+import { signUp } from "@/lib/api/auth";
 
 export default function SignUpForm() {
   const {
@@ -19,6 +19,7 @@ export default function SignUpForm() {
     handleSubmit,
     formState: { errors, isValid },
     trigger,
+    setError,
   } = useForm<SignUpSchema>({
     mode: "onChange",
     resolver: zodResolver(signUpSchema),
@@ -44,14 +45,39 @@ export default function SignUpForm() {
     }
   };
 
-  // api 파일 수정하기
   const onSubmit = async (data: SignUpSchema) => {
     try {
-      const response = await signUp(data);
+      const response = await signUp(
+        data.email,
+        data.nickname,
+        data.password,
+        data.passwordConfirmation
+      );
       console.log("회원가입 성공:", response);
       router.push("/");
     } catch (error: any) {
       console.error("회원가입 실패:", error.message);
+      const errorMessage =
+        error.response?.data?.message || error.response?.data?.error;
+      console.log("에러 메시지:", errorMessage);
+
+      // 이메일 중복 확인
+      if (errorMessage && errorMessage.includes("이메일")) {
+        setError("email", {
+          type: "manual",
+          message: "😬 이미 사용 중인 이메일입니다.",
+        });
+      }
+
+      // 닉네임 중복 확인
+      if (errorMessage && errorMessage.includes("Internal")) {
+        if (!errors.nickname) {
+          setError("nickname", {
+            type: "manual",
+            message: "😬 이미 사용 중인 닉네임입니다.",
+          });
+        }
+      }
     }
   };
 
