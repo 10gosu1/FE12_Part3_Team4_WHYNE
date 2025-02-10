@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-// import Dropdown from "@/components/Dropdown";
+import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon/Icon";
+// import Dropdown from "@/components/Dropdown";
 
 interface InputSelectProps {
   options: string[];
@@ -15,21 +15,74 @@ interface InputSelectProps {
 
 export default function InputSelect({
   options,
-  selectedValue = "",
+  selectedValue,
   onChange,
   className = "",
   children,
   id,
 }: InputSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentValue, setCurrentValue] = useState(selectedValue);
-
-  const toggleDropdown = () => setIsOpen((prev) => !prev);
-  const closeDropdown = () => setIsOpen(false);
+  const [currentValue, setCurrentValue] = useState<string | undefined>(
+    selectedValue || "Red"
+  );
 
   const handleSelect = (value: string) => {
     setCurrentValue(value);
     if (onChange) onChange(value);
+  };
+
+  // Dropdown 테스트
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const toggleDropdown = () => setIsOpen((prev) => !prev);
+  const closeDropdown = () => setIsOpen(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  interface DropdownProps {
+    options: string[];
+    onSelect: (value: string) => void;
+    closeDropdown: () => void;
+  }
+
+  const Dropdown = ({ options, onSelect, closeDropdown }: DropdownProps) => {
+    return (
+      <div
+        ref={dropdownRef}
+        className="absolute left-0 w-full mt-2 bg-white border border-gray-300 rounded-2xl shadow-lg z-10 overflow-hidden"
+      >
+        <ul>
+          {options.map((option) => (
+            <li
+              key={option}
+              className="flex items-center h-[52px] p-[6px] cursor-pointer"
+              onClick={() => {
+                onSelect(option);
+                closeDropdown();
+              }}
+            >
+              <div className="w-full px-[16px] py-[10px] text-gray-800 hover:bg-purple-10 hover:text-purple-100 rounded-[10px] text-md-14px-medium md:text-lg-16px-medium">
+                {option}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
   };
 
   return (
@@ -37,11 +90,11 @@ export default function InputSelect({
       <button
         type="button"
         className={`flex items-center w-full h-[42px] md:h-[48px] py-[14px] px-[20px] rounded-2xl border border-gray-300 focus:border-purple-100 focus:outline-none text-md-14px-regular md:text-lg-16px-regular text-left ${
-          currentValue ? "text-gray-800" : "text-gray-500"
+          isOpen ? "text-gray-500" : "text-gray-800"
         }`}
         onClick={toggleDropdown}
       >
-        {currentValue || children || "Select..."}
+        {currentValue}
         <Icon
           name="dropdown"
           size={24}
@@ -50,13 +103,13 @@ export default function InputSelect({
         />
       </button>
 
-      {/* {isOpen && (
+      {isOpen && (
         <Dropdown
           options={options}
           onSelect={handleSelect}
           closeDropdown={closeDropdown}
         />
-      )} */}
+      )}
     </div>
   );
 }

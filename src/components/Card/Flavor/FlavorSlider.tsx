@@ -2,20 +2,56 @@
 
 import { useState } from "react";
 
-const WineSliders = () => {
+export default function FlavorSlider({
+  lightBold: externalLightBold,
+  setLightBold: externalSetLightBold,
+  smoothTannic: externalSmoothTannic,
+  setSmoothTannic: externalSetSmoothTannic,
+  drySweet: externalDrySweet,
+  setDrySweet: externalSetDrySweet,
+  softAcidic: externalSoftAcidic,
+  setSoftAcidic: externalSetSoftAcidic,
+}: {
+  lightBold?: number;
+  setLightBold?: (value: number) => void;
+  smoothTannic?: number;
+  setSmoothTannic?: (value: number) => void;
+  drySweet?: number;
+  setDrySweet?: (value: number) => void;
+  softAcidic?: number;
+  setSoftAcidic?: (value: number) => void;
+}) {
+  // ✅ 내부 상태 추가 (부모가 값을 안 넘기면 이걸 사용)
+  const [localLightBold, setLocalLightBold] = useState(50);
+  const [localSmoothTannic, setLocalSmoothTannic] = useState(50);
+  const [localDrySweet, setLocalDrySweet] = useState(50);
+  const [localSoftAcidic, setLocalSoftAcidic] = useState(50);
+
+  // ✅ 부모가 넘긴 값이 있으면 사용, 없으면 내부 상태 사용
+  const lightBold = externalLightBold ?? localLightBold;
+  const setLightBold = externalSetLightBold ?? setLocalLightBold;
+
+  const smoothTannic = externalSmoothTannic ?? localSmoothTannic;
+  const setSmoothTannic = externalSetSmoothTannic ?? setLocalSmoothTannic;
+
+  const drySweet = externalDrySweet ?? localDrySweet;
+  const setDrySweet = externalSetDrySweet ?? setLocalDrySweet;
+
+  const softAcidic = externalSoftAcidic ?? localSoftAcidic;
+  const setSoftAcidic = externalSetSoftAcidic ?? setLocalSoftAcidic;
+
   const sliders = [
-    { label: "바디감", leftLabel: "가벼워요", rightLabel: "진해요" },
-    { label: "타닌", leftLabel: "부드러워요", rightLabel: "떫어요" },
-    { label: "당도", leftLabel: "드라이해요", rightLabel: "달아요" },
-    { label: "산미", leftLabel: "안셔요", rightLabel: "많이셔요" },
+    { label: "바디감", leftLabel: "가벼워요", rightLabel: "진해요", value: lightBold, setter: setLightBold },
+    { label: "타닌", leftLabel: "부드러워요", rightLabel: "떫어요", value: smoothTannic, setter: setSmoothTannic },
+    { label: "당도", leftLabel: "드라이해요", rightLabel: "달아요", value: drySweet, setter: setDrySweet },
+    { label: "산미", leftLabel: "안셔요", rightLabel: "많이셔요", value: softAcidic, setter: setSoftAcidic },
   ];
 
-  const [values, setValues] = useState([50, 30, 40, 20]);
-
   const handleChange = (index: number, value: number) => {
-    const newValues = [...values];
-    newValues[index] = value;
-    setValues(newValues);
+    // ✅ setter가 존재하는지 확인하고 실행
+    if (typeof sliders[index].setter === "function") {
+      sliders[index].setter(value);
+    }
   };
 
   return (
@@ -29,29 +65,22 @@ const WineSliders = () => {
 
           {/* 슬라이더 영역 */}
           <div className="flex items-center justify-between w-[402px]">
-            <span className="text-[16px] font-medium text-[#2D3034]">
-              {slider.leftLabel}
-            </span>
+            <span className="text-[16px] font-medium text-[#2D3034]">{slider.leftLabel}</span>
 
             <input
               type="range"
               min="0"
               max="100"
-              value={values[index]}
+              value={slider.value}
               onChange={(e) => handleChange(index, Number(e.target.value))}
               className="w-[260px] h-[6px] appearance-none bg-[#CFDBEA] rounded-full cursor-pointer 
-                         accent-[#6A42DB]
-"
+                         accent-[#6A42DB]"
             />
 
-            <span className="text-[16px] font-medium text-[#2D3034]">
-              {slider.rightLabel}
-            </span>
+            <span className="text-[16px] font-medium text-[#2D3034]">{slider.rightLabel}</span>
           </div>
         </div>
       ))}
     </div>
   );
-};
-
-export default WineSliders;
+}
