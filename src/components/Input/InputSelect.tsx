@@ -23,7 +23,7 @@ export default function InputSelect({
 }: InputSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentValue, setCurrentValue] = useState<string | undefined>(
-    selectedValue || "Red"
+    selectedValue || "타입을 선택해주세요"
   );
 
   const handleSelect = (value: string) => {
