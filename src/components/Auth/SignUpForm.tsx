@@ -13,6 +13,7 @@ import Image from "next/image";
 
 import { signUp } from "@/lib/api/auth";
 import { useAuth } from "@/context/AuthProvider";
+import { AxiosError } from "axios";
 
 export default function SignUpForm() {
   const { user } = useAuth();
@@ -30,6 +31,7 @@ export default function SignUpForm() {
     formState: { errors, isValid },
     trigger,
     setError,
+    setFocus,
   } = useForm<SignUpSchema>({
     mode: "onChange",
     resolver: zodResolver(signUpSchema),
@@ -63,28 +65,32 @@ export default function SignUpForm() {
       );
       console.log("회원가입 성공:", response);
       router.push("/");
-    } catch (error: any) {
-      console.error("회원가입 실패:", error.message);
-      const errorMessage =
-        error.response?.data?.message || error.response?.data?.error;
-      console.log("에러 메시지:", errorMessage);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error("회원가입 실패:", error.message);
+        const errorMessage =
+          error.response?.data?.message || error.response?.data?.error;
+        console.log("에러 메시지:", errorMessage);
 
-      // 이메일 중복 확인
-      if (errorMessage && errorMessage.includes("이메일")) {
-        setError("email", {
-          type: "manual",
-          message: "😬 이미 사용 중인 이메일입니다.",
-        });
-      }
-
-      // 닉네임 중복 확인
-      if (errorMessage && errorMessage.includes("Internal")) {
-        if (!errors.nickname) {
-          setError("nickname", {
+        // 이메일 중복 확인
+        if (errorMessage && errorMessage.includes("이메일")) {
+          setError("email", {
             type: "manual",
-            message: "😬 이미 사용 중인 닉네임입니다.",
+            message: "😬 이미 사용 중인 이메일입니다.",
           });
         }
+
+        // 닉네임 중복 확인
+        if (errorMessage && errorMessage.includes("Internal")) {
+          if (!errors.nickname) {
+            setError("nickname", {
+              type: "manual",
+              message: "😬 이미 사용 중인 닉네임입니다.",
+            });
+          }
+        }
+      } else {
+        console.error("알 수 없는 에러 발생:", error);
       }
     }
   };
@@ -131,6 +137,12 @@ export default function SignUpForm() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
+            onAnimationComplete={() => {
+              // 애니메이션이 끝난 후에 포커스 이동
+              if (validity.email) {
+                setFocus("nickname");
+              }
+            }}
           >
             <Label htmlFor="nickname">닉네임</Label>
             <Input
@@ -154,6 +166,12 @@ export default function SignUpForm() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
+            onAnimationComplete={() => {
+              // 애니메이션이 끝난 후에 포커스 이동
+              if (validity.nickname) {
+                setFocus("password");
+              }
+            }}
           >
             <Label htmlFor="password">비밀번호</Label>
             <InputPassword
@@ -177,6 +195,12 @@ export default function SignUpForm() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
+            onAnimationComplete={() => {
+              // 애니메이션이 끝난 후에 포커스 이동
+              if (validity.password) {
+                setFocus("passwordConfirmation");
+              }
+            }}
           >
             <Label htmlFor="passwordConfirmation">비밀번호 확인</Label>
             <InputPassword

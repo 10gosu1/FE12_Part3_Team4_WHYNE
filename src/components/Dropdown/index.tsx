@@ -54,7 +54,6 @@ export default function Dropdown({
   onSelect,
   width = "w-full",
   dropdownStyle,
-  ...props
 }: DropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
 

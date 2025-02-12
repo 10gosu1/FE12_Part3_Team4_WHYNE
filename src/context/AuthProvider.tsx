@@ -8,6 +8,7 @@ import {
   Dispatch,
   SetStateAction,
   ReactNode,
+  useCallback,
 } from "react";
 import { useRouter } from "next/navigation";
 import { fetchUserProfile } from "@/lib/api/user";
@@ -57,6 +58,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProps>(); // 로그인된 사용자 정보
   const router = useRouter();
 
+  const logout = useCallback(() => {
+    localStorage.removeItem("email");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setUser(undefined);
+    router.replace("/");
+  }, [router]);
+
   useEffect(() => {
     const email = localStorage.getItem("email");
     const access = localStorage.getItem("access_token");
@@ -78,15 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } else {
       setIsLoading(false);
     }
-  }, []);
-
-  const logout = () => {
-    localStorage.removeItem("email");
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    setUser(undefined);
-    router.replace("/");
-  };
+  }, [logout]);
 
   return (
     <UserContext.Provider value={{ isLoading, user, setUser, logout }}>

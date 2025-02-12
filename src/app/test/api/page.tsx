@@ -1,6 +1,5 @@
-"use client";
-import ApiTest from "@/lib/api/ApiTest";
+const Page = () => {
+  return <div>Test API Page</div>;
+};
 
-export default function ApiTestPage() {
-  return <ApiTest />;
-}
+export default Page;

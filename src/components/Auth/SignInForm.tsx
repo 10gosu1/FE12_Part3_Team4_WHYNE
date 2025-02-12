@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation"; // useRouter 사용
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { signInSchema, SignInSchema } from "@/app/schemas/auth"; // 로그인에 맞는 스키마
-import { useRouter } from "next/navigation"; // useRouter 사용
 import Button from "@/components/Button/button";
 import { Input, InputPassword, Label } from "@/components/Input";
-import Link from "next/link";
-import Image from "next/image";
-import Icon from "../Icon/Icon";
-
+import Icon from "@/components/Icon/Icon";
 import { signIn } from "@/lib/api/auth";
 import { signInWithKakao } from "@/lib/api/kakaoAuth";
 
@@ -25,6 +24,7 @@ export default function SignInForm() {
     formState: { errors, isValid },
     trigger,
     setError,
+    setFocus,
   } = useForm<SignInSchema>({
     mode: "onChange",
     resolver: zodResolver(signInSchema),
@@ -60,12 +60,16 @@ export default function SignInForm() {
       if (isMounted) {
         router.push("/");
       }
-    } catch (error: any) {
-      console.error("로그인 실패:", error.message);
-      setError("email", {
-        type: "manual",
-        message: "👀 이메일 혹은 비밀번호를 확인해주세요.",
-      });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("로그인 실패:", error.message);
+        setError("email", {
+          type: "manual",
+          message: "👀 이메일 혹은 비밀번호를 확인해주세요.",
+        });
+      } else {
+        console.error("알 수 없는 에러 발생:", error);
+      }
     }
   };
 
@@ -76,7 +80,7 @@ export default function SignInForm() {
 
   // 카카오 인증 후 redirect URI에서 code 파라미터를 받아오는 useEffect
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get("code");
+    const code = new URLSearchParams(window.location.search).get("code"); // window.location.search 사용
     if (code) {
       const getKakaoToken = async () => {
         try {
@@ -87,14 +91,17 @@ export default function SignInForm() {
             router.push("/");
           }
         } catch (error) {
-          console.error("카카오 로그인 실패:", error);
-          // 실패 시 처리
+          if (error instanceof Error) {
+            console.error("카카오 로그인 실패:", error.message);
+          } else {
+            console.error("알 수 없는 에러 발생:", error);
+          }
         }
       };
 
       getKakaoToken();
     }
-  }, [window.location.search, isMounted]); // URL에 변경이 있을 때마다 실행
+  }, [isMounted, router]);
 
   if (!isMounted) {
     return null;
@@ -142,6 +149,12 @@ export default function SignInForm() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
+            onAnimationComplete={() => {
+              // 애니메이션이 끝난 후에 포커스 이동
+              if (validity.email) {
+                setFocus("password");
+              }
+            }}
           >
             <Label htmlFor="password">비밀번호</Label>
             <InputPassword

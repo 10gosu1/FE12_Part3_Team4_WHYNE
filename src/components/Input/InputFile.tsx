@@ -9,6 +9,7 @@ interface InputFileProps {
   name: string;
   value: File | null;
   onChange: (name: string, value: File | null) => void;
+  initialData?: { image: string | null }; // 초기 데이터 (수정 모드일 때 사용할 이미지 URL)
 }
 
 export default function InputFile({
@@ -16,19 +17,23 @@ export default function InputFile({
   name,
   value,
   onChange,
+  initialData = { image: null },
 }: InputFileProps) {
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
     if (value) {
+      // 로컬 파일인 경우
       const objectUrl = URL.createObjectURL(value);
       setPreview(objectUrl);
-
       return () => URL.revokeObjectURL(objectUrl);
+    } else if (initialData.image) {
+      // 수정 모드일 때 API로 받은 이미지 URL 사용
+      setPreview(initialData.image);
     } else {
       setPreview(null);
     }
-  }, [value]);
+  }, [value, initialData.image]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -40,6 +45,7 @@ export default function InputFile({
 
   const handleRemoveImage = () => {
     onChange(name, null);
+    setPreview(null); // 미리보기 이미지도 삭제
   };
 
   return (

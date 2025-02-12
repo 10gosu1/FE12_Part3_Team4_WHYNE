@@ -22,7 +22,7 @@ export default function OAuthSignUp() {
           console.log("카카오 로그인 성공:", response);
 
           // 카카오 로그인 후 사용자 정보가 있으면 회원가입 처리
-          const kakaoUser = response.data; // 예시: 로그인 후 받은 사용자 정보
+          const kakaoUser = response.user; // 예시: 로그인 후 받은 사용자 정보
 
           // 회원가입 처리 (예시: 카카오에서 받은 사용자 정보로 회원가입)
           const userData = {
