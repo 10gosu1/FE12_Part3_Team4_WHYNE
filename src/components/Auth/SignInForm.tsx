@@ -13,6 +13,7 @@ import { Input, InputPassword, Label } from "@/components/Input";
 import Icon from "@/components/Icon/Icon";
 import { signIn } from "@/lib/api/auth";
 import { signInWithKakao } from "@/lib/api/kakaoAuth";
+import { getKakaoAuthUrl } from "@/utils/kakaoAuth";
 
 const KAKAO_CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID!;
 const KAKAO_REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI!;
@@ -74,7 +75,7 @@ export default function SignInForm() {
   };
 
   const handleKakaoLogin = () => {
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
+    const kakaoAuthUrl = getKakaoAuthUrl();
     window.location.href = kakaoAuthUrl;
   };
 
