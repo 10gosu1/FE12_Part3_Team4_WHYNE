@@ -5,7 +5,7 @@ import ModalReviewRate from "./ModalReviewRate";
 import ModalReviewSmell from "./ModalReviewSmell";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import axios from "axios";
+import { fetchWineById } from "@/lib/api/wine";
 
 // 1.와인 리뷰에 필요한 값들을 상태값으로 정리.
 // 2.(rating,content)값은 ModalReviewRate컴포넌트 / (lightBold, smoothTannic, drySweet, softAcidic)값은 ModalReviewFlavor 컴포넌트 / (aroma[])값은 ModalReviewSmell 컴포넌트
@@ -47,21 +47,21 @@ export default function ModalReviewForm({ onClose }: ModalReviewFormProps) {
     aroma: [],
     wineId: 0,
   });
-  const params = useParams();
-  const id = params.id;
+  const { id } = useParams();
+  const wineId = Array.isArray(id) ? id[0] : id;
 
   useEffect(() => {
     const fetchWine = async () => {
       try {
-        const response = await axios.get("/");
-        const { id, name, image } = response.data;
+        const response = await fetchWineById(wineId);
+        const { id, name, image } = response;
         setWine({ id, name, image });
       } catch (error) {
         console.error("와인 데이터를 가져오는 중 오류 발생:", error);
       }
     };
     fetchWine();
-  }, [id]);
+  }, [wineId]);
 
   const onSubmit = () => {
     alert("임시로 post요청 완료!");
