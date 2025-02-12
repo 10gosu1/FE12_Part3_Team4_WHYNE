@@ -36,10 +36,16 @@ apiClient.interceptors.response.use(
         error.config.headers["Authorization"] = `Bearer ${newAccessToken}`; // 갱신된 토큰을 다시 헤더에 설정
         return apiClient(error.config); // 갱신된 토큰으로 원래 요청 재시도
       } catch (refreshError) {
-        console.error("토큰 갱신 실패", refreshError);
-        // 토큰 갱신 실패 시 로그인 페이지로 리디렉션
-        if (refreshError.response?.status === 401) {
-          window.location.href = "/signin"; // 로그인 페이지로 리디렉션
+        // ✅ 타입 좁히기: axios.isAxiosError 확인
+        if (axios.isAxiosError(refreshError)) {
+          console.error("토큰 갱신 실패", refreshError);
+
+          // 토큰 갱신 실패 시 로그인 페이지로 리디렉션
+          if (refreshError.response?.status === 401) {
+            window.location.href = "/signin"; // 로그인 페이지로 리디렉션
+          }
+        } else {
+          console.error("알 수 없는 에러 발생", refreshError);
         }
         return Promise.reject(refreshError); // 갱신 실패 시 에러 처리
       }

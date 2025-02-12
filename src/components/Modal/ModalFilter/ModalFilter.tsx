@@ -6,7 +6,12 @@ import WineTypeSelector from "@/components/filter/WineTypeSelector";
 import PriceSlider from "@/components/filter/PriceSlider";
 import RatingFilter from "@/components/filter/RatingFilter";
 
-const ModalFilter = ({ isOpen, setIsOpen }) => {
+interface ModalFilterProps {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, setIsOpen }) => {
   // 필터 상태 관리
   const [selectedType, setSelectedType] = useState("White");
   const [minPrice, setMinPrice] = useState(0);

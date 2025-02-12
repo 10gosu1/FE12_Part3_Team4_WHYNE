@@ -13,7 +13,7 @@ const PriceSlider = ({
   setMinPrice?: (value: number) => void;
   setMaxPrice?: (value: number) => void;
 }) => {
-  const sliderRef = useRef(null);
+  const sliderRef = useRef<HTMLDivElement | null>(null); // null일 수도 있음
 
   // ✅ 내부 상태 추가 (부모에서 props를 안 넘겨주면 이걸 사용)
   const [localMinPrice, setLocalMinPrice] = useState(0);
@@ -25,39 +25,61 @@ const PriceSlider = ({
   const setMinPrice = externalSetMinPrice ?? setLocalMinPrice;
   const setMaxPrice = externalSetMaxPrice ?? setLocalMaxPrice;
 
-  const handleStart = (type) => (event) => {
-    event.preventDefault();
-    const slider = sliderRef.current;
-    if (!slider) return;
+  // const handleStart = (type) => (event) => {
+  //   event.preventDefault();
+  //   const slider = sliderRef.current;
+  //   if (!slider) return;
 
-    const isTouch = event.type === "touchstart";
+  //   const isTouch = event.type === "touchstart";
 
-    const handleMove = (moveEvent) => {
-      const movePoint = isTouch ? moveEvent.touches[0] : moveEvent;
-      const rect = slider.getBoundingClientRect();
-      const offsetX = movePoint.clientX - rect.left;
-      const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1);
-      let newValue = Math.round(percentage * 100000);
+  //   const handleMove = (moveEvent) => {
+  //     const movePoint = isTouch ? moveEvent.touches[0] : moveEvent;
+  //     const rect = slider.getBoundingClientRect();
+  //     const offsetX = movePoint.clientX - rect.left;
+  //     const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1);
+  //     let newValue = Math.round(percentage * 100000);
 
-      newValue = Math.round(newValue / 1000) * 1000;
+  //     newValue = Math.round(newValue / 1000) * 1000;
 
-      if (type === "min" && newValue < maxPrice - 1000) {
-        setMinPrice(newValue);
-      } else if (type === "max" && newValue > minPrice + 1000) {
-        setMaxPrice(newValue);
-      }
+  const handleStart =
+    (type: string) => (event: React.MouseEvent | React.TouchEvent) => {
+      event.preventDefault();
+      const slider = sliderRef.current;
+      if (!slider) return; // slider가 null이면 함수 종료
+
+      const isTouch = event.type === "touchstart";
+
+      const handleMove = (moveEvent: MouseEvent | TouchEvent) => {
+        const movePoint = isTouch
+          ? (moveEvent as TouchEvent).touches[0]
+          : (moveEvent as MouseEvent);
+        const rect = slider.getBoundingClientRect(); // slider가 null이 아님을 보장
+        const offsetX = movePoint.clientX - rect.left;
+        const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1);
+        let newValue = Math.round(percentage * 100000);
+
+        newValue = Math.round(newValue / 1000) * 1000;
+
+        if (type === "min" && newValue < maxPrice - 1000) {
+          setMinPrice(newValue);
+        } else if (type === "max" && newValue > minPrice + 1000) {
+          setMaxPrice(newValue);
+        }
+      };
+
+      const handleEnd = () => {
+        document.removeEventListener("mousemove", handleMove);
+        document.removeEventListener("mouseup", handleEnd);
+        document.removeEventListener("touchmove", handleMove);
+        document.removeEventListener("touchend", handleEnd);
+      };
+
+      document.addEventListener(
+        isTouch ? "touchmove" : "mousemove",
+        handleMove
+      );
+      document.addEventListener(isTouch ? "touchend" : "mouseup", handleEnd);
     };
-
-    const handleEnd = () => {
-      document.removeEventListener("mousemove", handleMove);
-      document.removeEventListener("mouseup", handleEnd);
-      document.removeEventListener("touchmove", handleMove);
-      document.removeEventListener("touchend", handleEnd);
-    };
-
-    document.addEventListener(isTouch ? "touchmove" : "mousemove", handleMove);
-    document.addEventListener(isTouch ? "touchend" : "mouseup", handleEnd);
-  };
 
   return (
     <div className="flex flex-col space-y-2 w-[263px] relative">

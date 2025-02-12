@@ -45,6 +45,7 @@ export default function Button({
     sm: "w-[100px] h-[40px] px-[12px] py-[10px] gap-[10px] rounded-[12px]",
     lg: "w-[400px] h-[50px] px-[172px] py-[16px] gap-[10px] rounded-[16px]",
   };
+  const variantClass = variantStyles[variant || "button"];
 
   return (
     <button
@@ -52,7 +53,7 @@ export default function Button({
       disabled={disabled}
       className={`
         ${baseStyles} 
-        ${variantStyles[variant]} 
+        ${variantClass} 
         ${sizeStyles[size]} 
         ${className || ""} 
         ${disabled ? "opacity-50 cursor-not-allowed" : ""}

@@ -102,8 +102,12 @@ export const socialSignIn = async (code: string) => {
     localStorage.setItem("refresh_token", refreshToken);
 
     return response.data;
-  } catch (error) {
-    console.error(`카카오 로그인 실패:`, error.response?.data || error.message);
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      console.error("토큰 갱신 실패:", error.response?.data || error.message);
+    } else {
+      console.error("토큰 갱신 실패: 알 수 없는 오류", error);
+    }
     throw error;
   }
 };

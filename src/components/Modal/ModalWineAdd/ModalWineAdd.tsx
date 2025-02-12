@@ -1,21 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ModalWineAddHeader from "./components/ModalWineAddHeader";
 import ModalWineAddForm from "./components/ModalWineAddForm";
+
+type WineData = {
+  name: string;
+  price: number;
+  region: string;
+  type: string;
+  image: string;
+  avgRating?: number; // avgRating을 optional로 추가
+};
 
 type ModalWindAddProps = {
   isOpen: boolean;
   onClose: () => void;
-  wineToEdit?: {
-    id: number;
-    name: string;
-    price: number;
-    region: string;
-    type: string;
-    image: string;
-  };
-  onSubmit: (wineData: any) => Promise<void>;
+  wineToEdit?: WineData & { id: number };
+  onSubmit: (wineData: WineData) => Promise<void>;
   isEditMode: boolean;
 };
 
@@ -26,13 +28,9 @@ export default function ModalWineAdd({
   onSubmit,
   isEditMode,
 }: ModalWindAddProps) {
-  const [editMode, setEditMode] = useState(false);
-
   useEffect(() => {
     if (wineToEdit) {
-      setEditMode(true);
-    } else {
-      setEditMode(false);
+      // wineToEdit이 있을 경우 수정 모드
     }
   }, [wineToEdit]);
 
@@ -76,15 +74,15 @@ export default function ModalWineAdd({
         <ModalWineAddForm
           onSubmit={handleWineSubmit}
           onClose={onClose}
-          initialData={
-            wineToEdit || {
-              name: "",
-              price: 0,
-              region: "",
-              type: "",
-              image: "",
-            }
-          }
+          initialData={{
+            name: wineToEdit?.name ?? "",
+            price: wineToEdit?.price ?? 0,
+            region: wineToEdit?.region ?? "",
+            type: wineToEdit?.type ?? "",
+            image: wineToEdit?.image ?? "",
+            avgRating: wineToEdit?.avgRating ?? 0, // 기본값 설정
+            id: wineToEdit?.id ?? undefined, // id도 기본값을 설정
+          }}
           isEditMode={isEditMode}
         />
       </div>
