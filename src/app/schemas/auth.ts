@@ -19,7 +19,7 @@ export const signUpSchema = z
         /^[A-Za-z0-9!@#$%^&*]+$/,
         "✋🏻 비밀번호는 숫자, 영문, 특수문자(!@#$%^&*)로만 가능합니다."
       ),
-    passwordConfirmation: z.string().min(1, "☝🏻 비밀번호 확인을 입력하세요."),
+    passwordConfirmation: z.string().min(1, "☝🏻 비밀번호 확인을 입력해주세요."),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
     message: "😢 비밀번호가 일치하지 않습니다.",
