@@ -11,5 +11,5 @@
 NEXT_PUBLIC_KAKAO_REDIRECT_URI=<Your redirect URI>
 NEXT_PUBLIC_KAKAO_CLIENT_ID=<Your Kakao client ID>
 
-환경 변수 값은 팀노션에 올려두겠습니다.
+해당 내용은 팀 프로젝트 노션에 "카카오 로그인 테스트 안내 > 환경 변수 설정"에 남겨두었습니다.
 ```
