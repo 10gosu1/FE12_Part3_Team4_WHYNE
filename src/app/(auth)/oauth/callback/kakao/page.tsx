@@ -1,4 +1,3 @@
-// /oauth/callback/kakao/page.tsx
 "use client"; // 클라이언트 전용으로 처리
 
 import { Suspense, useEffect, useState } from "react";
