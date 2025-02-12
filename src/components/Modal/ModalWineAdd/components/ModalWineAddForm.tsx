@@ -12,7 +12,7 @@ type ModalWineFormProps = {
     name: string;
     price: number;
     region: string;
-    type: string;
+    type: "RED" | "WHITE" | "SPARKLING";
     image: string;
     avgRating: number;
   };
@@ -20,7 +20,7 @@ type ModalWineFormProps = {
     name: string;
     price: number;
     region: string;
-    type: string;
+    type: "RED" | "WHITE" | "SPARKLING"; // 타입을 string에서 제한된 값으로 수정
     image: string;
     avgRating: number;
   }) => Promise<void>;
@@ -33,7 +33,7 @@ export default function ModalWineAddForm({
     name: "",
     price: 0,
     region: "",
-    type: "",
+    type: "RED",
     image: "",
     avgRating: 0,
   },
@@ -108,9 +108,12 @@ export default function ModalWineAddForm({
 
   // 필수 입력값 체크
   const isFormValid =
+    formData.name &&
     formData.name.trim() !== "" &&
     formData.price > 0 &&
+    formData.region &&
     formData.region.trim() !== "" &&
+    formData.type &&
     formData.type.trim() !== "" &&
     (file !== null || formData.image !== "");
 
@@ -175,7 +178,9 @@ export default function ModalWineAddForm({
           id="type"
           options={["RED", "WHITE", "SPARKLING"]}
           selectedValue={formData.type}
-          onChange={(value) => setFormData({ ...formData, type: value })}
+          onChange={(value: "RED" | "WHITE" | "SPARKLING") =>
+            setFormData({ ...formData, type: value })
+          }
         />
       </div>
       <div>

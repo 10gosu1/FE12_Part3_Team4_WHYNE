@@ -5,9 +5,9 @@ import Icon from "@/components/Icon/Icon";
 // import Dropdown from "@/components/Dropdown";
 
 interface InputSelectProps {
-  options: string[];
-  selectedValue?: string;
-  onChange?: (value: string) => void;
+  options: ("RED" | "WHITE" | "SPARKLING")[]; // options 값이 제한된 타입만 받도록 수정
+  selectedValue?: "RED" | "WHITE" | "SPARKLING"; // selectedValue 값이 제한된 타입만 받도록 수정
+  onChange?: (value: "RED" | "WHITE" | "SPARKLING") => void; // onChange 매개변수 타입을 제한된 값으로 수정
   className?: string;
   children?: React.ReactNode;
   id?: string;
@@ -20,11 +20,11 @@ export default function InputSelect({
   className = "",
 }: InputSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentValue, setCurrentValue] = useState<string | undefined>(
-    selectedValue || "타입을 선택해주세요"
-  );
+  const [currentValue, setCurrentValue] = useState<
+    "RED" | "WHITE" | "SPARKLING" | string
+  >(selectedValue || "타입을 선택해주세요");
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (value: "RED" | "WHITE" | "SPARKLING") => {
     setCurrentValue(value);
     if (onChange) onChange(value);
   };
@@ -52,8 +52,8 @@ export default function InputSelect({
   }, []);
 
   interface DropdownProps {
-    options: string[];
-    onSelect: (value: string) => void;
+    options: ("RED" | "WHITE" | "SPARKLING")[];
+    onSelect: (value: "RED" | "WHITE" | "SPARKLING") => void;
     closeDropdown: () => void;
   }
 
