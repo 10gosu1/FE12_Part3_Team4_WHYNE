@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "NODE_OPTIONS='--loader ts-node/esm' NEXT_IGNORE_TS_ERRORS=1 NEXT_DISABLE_ESLINT=1 next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
