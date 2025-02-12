@@ -11,7 +11,6 @@ interface InputPasswordProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 export default function InputPassword({
   isErrored = false,
-  id,
   ...props
 }: InputPasswordProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);

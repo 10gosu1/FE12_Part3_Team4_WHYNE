@@ -28,13 +28,17 @@ export const updateUserProfile = async (nickname: string, imageUrl: string) => {
 // ✅ 내가 작성한 리뷰 조회
 export const fetchMyReviews = async (limit: number, cursor?: string) => {
   try {
-    const params: any = { limit };
+    const params: { limit: number; cursor?: string } = { limit };
     if (cursor) params.cursor = cursor; // cursor 값이 있을 때만 추가
 
     const response = await apiClient.get("/users/me/reviews", { params });
     return response.data;
   } catch (error) {
-    console.error("❌ 내가 작성한 리뷰 조회 실패:", error);
+    if (error instanceof Error) {
+      console.error("❌ 내가 작성한 리뷰 조회 실패:", error);
+    } else {
+      console.error("❌ 내가 작성한 리뷰 조회 실패: 알 수 없는 오류");
+    }
     throw error;
   }
 };
@@ -42,13 +46,17 @@ export const fetchMyReviews = async (limit: number, cursor?: string) => {
 // ✅ 내가 만든 와인 목록 조회
 export const fetchMyWines = async (limit: number, cursor?: string) => {
   try {
-    const params: any = { limit };
+    const params: { limit: number; cursor?: string } = { limit };
     if (cursor) params.cursor = cursor; // cursor 값이 있을 때만 추가
 
     const response = await apiClient.get("/users/me/wines", { params });
     return response.data;
   } catch (error) {
-    console.error("❌ 내가 만든 와인 목록 조회 실패:", error);
+    if (error instanceof Error) {
+      console.error("❌ 내가 만든 와인 목록 조회 실패:", error);
+    } else {
+      console.error("❌ 내가 만든 와인 목록 조회 실패: 알 수 없는 오류");
+    }
     throw error;
   }
 };

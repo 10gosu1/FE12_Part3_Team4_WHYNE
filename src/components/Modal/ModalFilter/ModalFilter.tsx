@@ -35,15 +35,29 @@ const ModalFilter = ({ isOpen, setIsOpen }) => {
         </div>
 
         {/* 필터 옵션 */}
-        <WineTypeSelector selectedType={selectedType} setSelectedType={setSelectedType} />
+        <WineTypeSelector
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+        />
         <hr className="my-4 border-gray-200" />
-        <PriceSlider minPrice={minPrice} maxPrice={maxPrice} setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} />
+        <PriceSlider
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          setMinPrice={setMinPrice}
+          setMaxPrice={setMaxPrice}
+        />
         <hr className="my-4 border-gray-200" />
-        <RatingFilter selectedRating={selectedRating} setSelectedRating={setSelectedRating} />
+        <RatingFilter
+          selectedRating={selectedRating}
+          setSelectedRating={setSelectedRating}
+        />
 
         {/* 버튼 */}
         <div className="flex justify-between mt-6">
-          <button onClick={handleReset} className="w-1/4 py-3 bg-[#F2F4F8] text-[#6A42DB] rounded-lg mr-2">
+          <button
+            onClick={handleReset}
+            className="w-1/4 py-3 bg-[#F2F4F8] text-[#6A42DB] rounded-lg mr-2"
+          >
             초기화
           </button>
           <button className="w-3/4 py-3 bg-[#6A42DB] text-white rounded-lg">

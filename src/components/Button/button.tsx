@@ -19,7 +19,7 @@ interface ButtonProps {
 export default function Button({
   children,
   onClick,
-  variant = "button",
+  variant,
   size = "sm",
   disabled = false,
   className,

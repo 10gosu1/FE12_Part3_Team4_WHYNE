@@ -1,18 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation"; // useRouter 사용
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { signInSchema, SignInSchema } from "@/app/schemas/auth"; // 로그인에 맞는 스키마
-import { useRouter } from "next/navigation"; // useRouter 사용
 import Button from "@/components/Button/button";
 import { Input, InputPassword, Label } from "@/components/Input";
-import Link from "next/link";
-import Image from "next/image";
-import Icon from "../Icon/Icon";
-
+import Icon from "@/components/Icon/Icon";
 import { signIn } from "@/lib/api/auth";
+import { signInWithKakao } from "@/lib/api/kakaoAuth";
+
+const KAKAO_CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID!;
+const KAKAO_REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI!;
 
 export default function SignInForm() {
   const {
@@ -21,6 +24,7 @@ export default function SignInForm() {
     formState: { errors, isValid },
     trigger,
     setError,
+    setFocus,
   } = useForm<SignInSchema>({
     mode: "onChange",
     resolver: zodResolver(signInSchema),
@@ -31,7 +35,12 @@ export default function SignInForm() {
     password: false,
   });
 
-  const router = useRouter(); // useRouter 훅
+  const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleValidate = async (field: "email" | "password") => {
     const isValid = await trigger(field);
@@ -48,16 +57,55 @@ export default function SignInForm() {
       const response = await signIn(data.email, data.password);
       console.log("로그인 성공:", response);
 
-      // 로그인 성공 후 홈으로 리디렉션
-      router.push("/"); // 홈 화면으로 이동
-    } catch (error: any) {
-      console.error("로그인 실패:", error.message);
-      setError("email", {
-        type: "manual",
-        message: "👀 이메일 혹은 비밀번호를 확인해주세요.",
-      });
+      if (isMounted) {
+        router.push("/");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("로그인 실패:", error.message);
+        setError("email", {
+          type: "manual",
+          message: "👀 이메일 혹은 비밀번호를 확인해주세요.",
+        });
+      } else {
+        console.error("알 수 없는 에러 발생:", error);
+      }
     }
   };
+
+  const handleKakaoLogin = () => {
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
+    window.location.href = kakaoAuthUrl;
+  };
+
+  // 카카오 인증 후 redirect URI에서 code 파라미터를 받아오는 useEffect
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("code"); // window.location.search 사용
+    if (code) {
+      const getKakaoToken = async () => {
+        try {
+          const response = await signInWithKakao(code); // 백엔드에서 카카오 토큰 받아오기
+          console.log("카카오 로그인 성공:", response);
+
+          if (isMounted) {
+            router.push("/");
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            console.error("카카오 로그인 실패:", error.message);
+          } else {
+            console.error("알 수 없는 에러 발생:", error);
+          }
+        }
+      };
+
+      getKakaoToken();
+    }
+  }, [isMounted, router]);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <form
@@ -101,6 +149,12 @@ export default function SignInForm() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
+            onAnimationComplete={() => {
+              // 애니메이션이 끝난 후에 포커스 이동
+              if (validity.email) {
+                setFocus("password");
+              }
+            }}
           >
             <Label htmlFor="password">비밀번호</Label>
             <InputPassword
@@ -130,6 +184,7 @@ export default function SignInForm() {
         <Button
           variant="social"
           className="w-full h-[48px] md:h-[50px] text-lg-16px-medium hover:bg-yellow-300 hover:border-none hover:text-yellow-950"
+          onClick={handleKakaoLogin}
         >
           <Icon
             name="kakao"

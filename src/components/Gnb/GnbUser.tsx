@@ -1,42 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useAuth } from "@/context/AuthProvider";
 import Link from "next/link";
 import Image from "next/image";
 import Dropdown from "../Dropdown";
-import getUserProfile from "./GetUserProfile";
+import Skeleton from "./Skeleton";
 
 export default function GnbUser() {
+  const { user, isLoading, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [userImage, setUserImage] = useState("/images/common/no_profile.svg");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken) {
-      setIsLoggedIn(true);
-      getUserProfile().then((user) => {
-        if (user) {
-          setUserImage(user.image || "/images/common/no_profile.svg");
-        } else {
-          setUserImage("/images/common/no_profile.svg");
-        }
-      });
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    setIsDropdownOpen(false);
-    window.location.reload();
-  };
+  if (isLoading) {
+    return (
+      <div className="flex gap-[20px] md:gap-[40px] relative">
+        {/* 스켈레톤 로딩 */}
+        <Skeleton
+          width="w-[45px]"
+          height="h-[45px]"
+          className="border border-gray-300 rounded-full overflow-hidden"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-[20px] md:gap-[40px] relative">
-      {!isLoggedIn ? (
+      {!user ? (
         <>
           <Link href="/signin" className="hover:text-purple-100 transition">
             로그인
@@ -54,7 +44,7 @@ export default function GnbUser() {
                   <Image
                     style={{ objectFit: "cover" }}
                     fill
-                    src={userImage}
+                    src={user.image || "/images/common/no_profile.svg"}
                     className="!relative"
                     alt="프로필 이미지"
                   />
@@ -63,7 +53,7 @@ export default function GnbUser() {
             }
             items={[
               { label: "마이페이지", href: "/myprofile" },
-              { label: "로그아웃", href: "/", onClick: handleLogout },
+              { label: "로그아웃", href: "/", onClick: logout },
             ]}
             isOpen={isDropdownOpen}
             onToggle={() => setIsDropdownOpen((prev) => !prev)}

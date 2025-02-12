@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import apiClient from "./api";
 
 // ✅ 회원가입
@@ -24,11 +25,18 @@ export const signUp = async (
         withCredentials: false, // ✅ CORS 문제 방지
       }
     );
-
     console.log("✅ 회원가입 성공:", response.data);
-    return response.data;
-  } catch (error: any) {
-    console.error("❌ 회원가입 실패:", error.response?.data || error);
+
+    const loginResponse = await signIn(email, password);
+    console.log("✅ 로그인 성공 후 토큰 저장:", loginResponse);
+
+    return loginResponse;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      console.error("❌ 회원가입 실패:", error.response?.data || error);
+    } else {
+      console.error("❌ 회원가입 실패: 알 수 없는 오류");
+    }
     throw error;
   }
 };
@@ -43,6 +51,7 @@ export const signIn = async (email: string, password: string) => {
     console.log("🛠 로그인 응답 데이터:", response.data);
     console.log("🛠 저장할 accessToken:", accessToken);
 
+    localStorage.setItem("email", email);
     localStorage.setItem("access_token", accessToken);
     localStorage.setItem("refresh_token", refreshToken);
 
@@ -78,11 +87,13 @@ export const refreshAccessToken = async () => {
 };
 
 // ✅ 카카오 소셜 로그인
-export const socialSignIn = async (token: string) => {
+export const socialSignIn = async (code: string) => {
   try {
+    const redirectUri = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI!;
+
     const response = await apiClient.post(`/auth/signIn/KAKAO`, {
-      token,
-      redirectUri: "http://localhost:3000/oauth/kakao", // 배포 시 변경 필요
+      redirectUri,
+      token: code,
     });
 
     const { accessToken, refreshToken } = response.data;
@@ -90,10 +101,9 @@ export const socialSignIn = async (token: string) => {
     localStorage.setItem("access_token", accessToken);
     localStorage.setItem("refresh_token", refreshToken);
 
-    console.log(`카카오 로그인 성공! 액세스 토큰:`, accessToken);
     return response.data;
   } catch (error) {
-    console.error(`카카오 로그인 실패:`, error);
+    console.error(`카카오 로그인 실패:`, error.response?.data || error.message);
     throw error;
   }
 };

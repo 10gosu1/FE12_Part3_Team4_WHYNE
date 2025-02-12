@@ -45,7 +45,7 @@ export default function InputProfileImage() {
       className="relative w-[60px] h-[60px] md:w-[80px] md:h-[80px] lg:w-[164px] lg:h-[164px] rounded-full overflow-hidden border border-gray-300 cursor-pointer"
     >
       <Image
-        src={imagePreview || "../../../public/images/common/no_profile.svg"}
+        src={imagePreview || "/images/common/no_profile.svg"}
         layout="fill"
         className="object-cover"
         alt="프로필 이미지"

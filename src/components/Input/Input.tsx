@@ -13,7 +13,6 @@ export default function Input({
   type = "text",
   isErrored = false,
   className = "",
-  id,
   ...props
 }: InputProps) {
   return (
