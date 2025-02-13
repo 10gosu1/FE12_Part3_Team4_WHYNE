@@ -176,7 +176,7 @@ export default function SignUpForm() {
             <Label htmlFor="password">비밀번호</Label>
             <InputPassword
               id="password"
-              placeholder="영문, 숫자, 특수문자 포함"
+              placeholder="숫자, 영문, 특수문자(!@#$%^&*)만 가능"
               {...register("password")}
               onBlur={() => handleValidate("password")}
               onKeyDown={(e) => e.key === "Enter" && handleValidate("password")}

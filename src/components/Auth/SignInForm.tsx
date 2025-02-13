@@ -4,18 +4,16 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // useRouter 사용
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { signInSchema, SignInSchema } from "@/app/schemas/auth"; // 로그인에 맞는 스키마
+import { signInSchema, SignInSchema } from "@/app/schemas/auth";
 import Button from "@/components/Button/button";
 import { Input, InputPassword, Label } from "@/components/Input";
 import Icon from "@/components/Icon/Icon";
 import { signIn } from "@/lib/api/auth";
 import { signInWithKakao } from "@/lib/api/kakaoAuth";
-
-const KAKAO_CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID!;
-const KAKAO_REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI!;
+import { getKakaoAuthUrl } from "@/utils/kakaoAuth";
 
 export default function SignInForm() {
   const {
@@ -74,7 +72,7 @@ export default function SignInForm() {
   };
 
   const handleKakaoLogin = () => {
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
+    const kakaoAuthUrl = getKakaoAuthUrl();
     window.location.href = kakaoAuthUrl;
   };
 

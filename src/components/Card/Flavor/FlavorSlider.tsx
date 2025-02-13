@@ -70,7 +70,7 @@ export default function FlavorSlider({
             <input
               type="range"
               min="0"
-              max="100"
+              max="10"
               value={slider.value}
               onChange={(e) => handleChange(index, Number(e.target.value))}
               className="w-[260px] h-[6px] appearance-none bg-[#CFDBEA] rounded-full cursor-pointer 

@@ -8,12 +8,12 @@ type WineData = {
   name: string;
   price: number;
   region: string;
-  type: string;
+  type: "RED" | "WHITE" | "SPARKLING"; // 타입을 string에서 제한된 값으로 수정
   image: string;
   avgRating?: number; // avgRating을 optional로 추가
 };
 
-type ModalWindAddProps = {
+type ModalWineAddProps = {
   isOpen: boolean;
   onClose: () => void;
   wineToEdit?: WineData & { id: number };
@@ -27,20 +27,14 @@ export default function ModalWineAdd({
   wineToEdit,
   onSubmit,
   isEditMode,
-}: ModalWindAddProps) {
+}: ModalWineAddProps) {
   useEffect(() => {
     if (wineToEdit) {
       // wineToEdit이 있을 경우 수정 모드
     }
   }, [wineToEdit]);
 
-  const handleWineSubmit = async (data: {
-    name: string;
-    price: number;
-    region: string;
-    type: string;
-    image: string;
-  }) => {
+  const handleWineSubmit = async (data: WineData) => {
     console.log(data);
     await onSubmit(data); // onSubmit을 호출하여 부모에서 처리
     onClose();
@@ -78,7 +72,7 @@ export default function ModalWineAdd({
             name: wineToEdit?.name ?? "",
             price: wineToEdit?.price ?? 0,
             region: wineToEdit?.region ?? "",
-            type: wineToEdit?.type ?? "",
+            type: wineToEdit?.type as "RED" | "WHITE" | "SPARKLING",
             image: wineToEdit?.image ?? "",
             avgRating: wineToEdit?.avgRating ?? 0, // 기본값 설정
             id: wineToEdit?.id ?? undefined, // id도 기본값을 설정
