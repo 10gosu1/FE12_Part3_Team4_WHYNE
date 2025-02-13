@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+// import { useAuth } from "@/context/AuthProvider";
 import {
   Input,
   InputFile,
@@ -13,10 +13,71 @@ import {
   Label,
 } from "@/components/Input";
 
-import ModalWineAdd from "@/components/Modal/ModalWineAdd/ModalWineAdd";
+//import ModalWineAdd from "@/components/Modal/ModalWineAdd/ModalWineAdd";
 import Gnb from "@/components/Gnb";
+// import { createWine, updateWine } from "@/lib/api/wine";
+// import { useRouter } from "next/navigation"; // 라우팅 추가
+// import { fetchMyWines } from "@/lib/api/user";
+
+// type WineData = {
+//   name: string;
+//   price: number;
+//   region: string;
+//   type: string;
+//   image: string;
+// };
+
+// type Wine = {
+//   id: number;
+//   name: string;
+//   price: number;
+//   region: string;
+//   type: "RED" | "WHITE" | "SPARKLING";
+//   image: string;
+// };
+
+// type ModalWineAddProps = {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   wineToEdit?: (Wine & { id: number }) | null; // 수정: wineToEdit을 WineData & { id: number } | null로 변경
+//   onSubmit: (wineData: WineData) => Promise<void>;
+//   isEditMode: boolean;
+// };
 
 export default function HyeseonTest() {
+  // const { user } = useAuth();
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isEditMode, setIsEditMode] = useState(false);
+  // //const [userWines, setUserWines] = useState<Wine[]>([]); // 사용자가 등록한 와인 목록
+  // const [wineToEdit, setWineToEdit] = useState<Wine | null>(null); // 수정할 와인 데이터
+  // const router = useRouter(); // useRouter를 올바 르게 선언
+
+  // useEffect(() => {
+  //   if (user) {
+  //     fetchMyWines(1) // 10개의 와인 목록 가져옴
+  //       .then((data) => {
+  //         if (data && data.list && data.list.length > 0) {
+  //           setUserWines(data.list); // list 배열에서 와인 목록 설정
+
+  //           // 와인 목록에 포함된 image 데이터 확인
+  //           console.log("불러온 와인 목록:", data.list);
+  //           data.list.forEach((wine: Wine) => {
+  //             console.log("와인 ID:", wine.id);
+  //             console.log("와인 이미지 URL:", wine.image); // imageUrl 확인
+  //           });
+  //         } else {
+  //           console.log("사용자가 만든 와인이 없습니다.");
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error(
+  //           "내가 만든 와인 목록을 불러오는 중 오류가 발생했습니다.",
+  //           error
+  //         );
+  //       });
+  //   }
+  // }, [user]);
+
   // InputSearch 테스트용
   const handleSearch = (keyword?: string) => {
     console.log("Search keyword:", keyword);
@@ -25,13 +86,74 @@ export default function HyeseonTest() {
   // InputFile 테스트용
   const [file, setFile] = useState<File | null>(null);
   const handleFileChange = (name: string, file: File | null) => {
-    setFile(file);
+    setFile(file); // 상태 업데이트
     console.log("선택한 파일:", file);
   };
 
-  // ModalWineAdd 테스트용
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // useEffect(() => {
+  //   if (isEditMode && wineToEdit) {
+  //     // 수정 모드일 때 와인 데이터를 불러와서 해당 이미지 URL을 설정
+  //     setFile(null); // 이미지는 File 객체가 아닌 URL이므로, File 상태를 null로 설정
+  //   } else {
+  //     setFile(null); // 수정 모드가 아니면 파일 초기화
+  //   }
+  // }, [isEditMode, wineToEdit]);
 
+  // const handleWineSubmit = async (data: WineData) => {
+  //   try {
+  //     // WineData를 Wine 타입으로 변환
+  //     const validData: Wine = {
+  //       ...data,
+  //       price: Number(data.price),
+  //       id: wineToEdit?.id || 0,
+  //     }; // id는 수정 모드에서만 필요
+
+  //     console.log("전송되는 데이터:", JSON.stringify(validData, null, 2));
+
+  //     if (isEditMode && wineToEdit?.id) {
+  //       // 수정 모드일 때
+  //       console.log("수정할 와인 ID:", wineToEdit.id);
+  //       console.log("PATCH 요청 바디:", validData);
+  //       await updateWine(String(wineToEdit.id), validData); // id를 string으로 변환
+  //       alert("와인 정보가 수정되었습니다.");
+  //     } else {
+  //       await createWine(validData);
+  //       alert("새로운 와인이 등록되었습니다.");
+  //     }
+
+  //     setIsModalOpen(false);
+  //     setWineToEdit(null);
+  //     router.push("/");
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       console.error("❌ 와인 처리 중 오류:", error.message);
+  //       alert("와인 처리 중 오류가 발생했습니다. 상세 오류: " + error.message);
+  //     } else {
+  //       console.error("❌ 알 수 없는 오류가 발생했습니다:", error);
+  //       alert("알 수 없는 오류가 발생했습니다.");
+  //     }
+  //   }
+  // };
+
+  // // ModalWineAdd 테스트용
+  // const handleWineModalOpen = (editMode: boolean) => {
+  //   if (!user) {
+  //     // 로그인되지 않은 경우 로그인 페이지로 리디렉션
+  //     router.push("/signin"); // 로그인 페이지로 이동
+  //     return;
+  //   }
+  //   setIsEditMode(editMode);
+  //   setIsModalOpen(true);
+
+  //   if (editMode && userWines.length > 0) {
+  //     // 수정 모드일 때, userWines에서 수정할 와인 데이터를 찾아 설정
+  //     const wineToEdit = userWines[0]; // 첫 번째 와인 데이터 사용
+  //     setWineToEdit(wineToEdit);
+  //   } else {
+  //     // 새로운 와인 등록 시 빈 데이터
+  //     setWineToEdit(null);
+  //   }
+  // };
   return (
     <>
       <Gnb />
@@ -59,25 +181,40 @@ export default function HyeseonTest() {
         <InputFile
           id="file"
           name="file"
-          value={file}
+          value={file} // 부모에서 관리하는 file 상태
           onChange={handleFileChange}
         />
+
         <br />
         <Label htmlFor="file">프로필 사진 업로드</Label>
         <InputProfileImage />
       </div>
-      <div className="mt-[40px]">
+      {/* <div className="mt-[40px]">
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded-md mr-2"
+          onClick={() => handleWineModalOpen(false)} // 와인 등록 모드
+          disabled={!user} // 로그인되지 않으면 버튼 비활성화
+        >
+          와인 등록하기
+        </button>
         <button
           className="px-4 py-2 bg-blue-500 text-white rounded-md"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => handleWineModalOpen(true)} // 와인 수정 모드
+          disabled={!user} // 로그인되지 않으면 버튼 비활성화
         >
-          모달 열기
+          수정하기
         </button>
         <ModalWineAdd
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false);
+            setWineToEdit(null); // 모달 닫을 때 수정 데이터 초기화
+          }}
+          wineToEdit={wineToEdit ?? undefined} // 수정할 와인 데이터 전달
+          onSubmit={handleWineSubmit} // onSubmit 함수 전달
+          isEditMode={isEditMode} // 수정 모드 여부 전달
         />
-      </div>
+      </div> */}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { AxiosError } from "axios";
 import { socialSignIn } from "./auth";
 
 // 카카오 로그인 처리 함수
@@ -16,10 +16,14 @@ export const signInWithKakao = async (code: string) => {
     console.log("✅ 사용자 정보:", user);
     return { accessToken, refreshToken, user }; // 필요에 따라 리턴할 데이터 처리
   } catch (error) {
-    console.error(
-      "❌ 카카오 로그인 실패:",
-      error.response?.data || error.message
-    );
+    if (error instanceof AxiosError) {
+      console.error(
+        "❌ 카카오 로그인 실패:",
+        error.response?.data || error.message
+      );
+    } else {
+      console.error("❌ 카카오 로그인 실패: 알 수 없는 오류");
+    }
     throw error;
   }
 };

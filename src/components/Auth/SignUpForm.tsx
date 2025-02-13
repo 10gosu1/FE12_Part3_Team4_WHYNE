@@ -13,6 +13,7 @@ import Image from "next/image";
 
 import { signUp } from "@/lib/api/auth";
 import { useAuth } from "@/context/AuthProvider";
+import { AxiosError } from "axios";
 
 export default function SignUpForm() {
   const { user } = useAuth();
@@ -64,28 +65,32 @@ export default function SignUpForm() {
       );
       console.log("회원가입 성공:", response);
       router.push("/");
-    } catch (error: any) {
-      console.error("회원가입 실패:", error.message);
-      const errorMessage =
-        error.response?.data?.message || error.response?.data?.error;
-      console.log("에러 메시지:", errorMessage);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error("회원가입 실패:", error.message);
+        const errorMessage =
+          error.response?.data?.message || error.response?.data?.error;
+        console.log("에러 메시지:", errorMessage);
 
-      // 이메일 중복 확인
-      if (errorMessage && errorMessage.includes("이메일")) {
-        setError("email", {
-          type: "manual",
-          message: "😬 이미 사용 중인 이메일입니다.",
-        });
-      }
-
-      // 닉네임 중복 확인
-      if (errorMessage && errorMessage.includes("Internal")) {
-        if (!errors.nickname) {
-          setError("nickname", {
+        // 이메일 중복 확인
+        if (errorMessage && errorMessage.includes("이메일")) {
+          setError("email", {
             type: "manual",
-            message: "😬 이미 사용 중인 닉네임입니다.",
+            message: "😬 이미 사용 중인 이메일입니다.",
           });
         }
+
+        // 닉네임 중복 확인
+        if (errorMessage && errorMessage.includes("Internal")) {
+          if (!errors.nickname) {
+            setError("nickname", {
+              type: "manual",
+              message: "😬 이미 사용 중인 닉네임입니다.",
+            });
+          }
+        }
+      } else {
+        console.error("알 수 없는 에러 발생:", error);
       }
     }
   };

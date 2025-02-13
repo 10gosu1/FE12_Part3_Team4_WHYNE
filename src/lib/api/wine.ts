@@ -1,7 +1,16 @@
 import apiClient from "./api";
 
+interface WineData {
+  name: string;
+  type: "RED" | "WHITE" | "SPARKLING"; // 와인 종류
+  price: number;
+  rating?: number; // 선택적 평점
+  description?: string; // 선택적 설명
+  imageUrl?: string; // 선택적 이미지 URL
+}
+
 // ✅ 와인 생성
-export const createWine = async (wineData: any) => {
+export const createWine = async (wineData: WineData) => {
   try {
     const response = await apiClient.post("/wines", wineData);
     return response.data;
@@ -55,7 +64,7 @@ export const fetchWineById = async (wineId: string) => {
 };
 
 // ✅ 와인 수정
-export const updateWine = async (wineId: string, wineData: any) => {
+export const updateWine = async (wineId: string, wineData: WineData) => {
   try {
     const response = await apiClient.patch(`/wines/${wineId}`, wineData);
     return response.data;

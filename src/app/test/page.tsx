@@ -1,4 +1,4 @@
-import HoyoungTest from "./HoyoungTest";
+//import HoyoungTest from "./HoyoungTest";
 import HyeseonTest from "./HyeseonTest";
 import KyungsuTest from "./KyungsuTest";
 import GiyeonTest from "./GiyeonTest";
@@ -18,7 +18,7 @@ export default function TestPage() {
           <h2 className="text-lg font-semibold text-purple-600">
             🟪 호영 테스트
           </h2>
-          <HoyoungTest />
+          {/* <HoyoungTest /> */}
         </section>
 
         {/* ✅ 혜선 테스트 영역 */}
