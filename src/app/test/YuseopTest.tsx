@@ -2,6 +2,7 @@
 
 import Button from "@/components/Button/button";
 import MoreMenu from "@/components/Moremenu/MoreMenu"; // ✅ MoreMenu 추가
+import LikeButton from "@/components/Like/LikeButton";
 
 export default function YuseopTest() {
   return (
@@ -47,7 +48,14 @@ export default function YuseopTest() {
       {/* ✅ MoreMenu 테스트 추가 */}
       <div className="flex flex-col gap-4 p-4 border rounded-lg shadow-md">
         <h3 className="text-lg font-bold">📌 MoreMenu 테스트</h3>
-        <MoreMenu reviewId={1} />
+        <MoreMenu reviewId={1653} userId={965} />
+      </div>
+      {/* ✅ 좋아요 버튼 테스트 */}
+      <div className="flex flex-col items-center gap-4 p-4 border rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">📌 좋아요 버튼 테스트</h3>
+
+        {/* ✅ LikeButton 테스트 - 임의의 리뷰 ID */}
+        <LikeButton reviewId={1626} initialLiked={false} userId={961} />
       </div>
     </div>
   );
