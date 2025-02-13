@@ -16,6 +16,16 @@ import { AxiosError } from "axios";
 // 상태값들은 깊어야 2단계정도 prop으로 내려주기 때문에 context사용은 보류 3단계면 사용해야 한다고 판단.
 // 리팩토링때 좀 더 쉬운 방법 고안.
 
+type ReviewData = {
+  rating: number;
+  lightBold: number;
+  smoothTannic: number;
+  drySweet: number;
+  softAcidic: number;
+  aroma: string[];
+  content: string;
+  wineId?: number;  
+};
 
 type ModalReviewFormProps = {
   onClose: () => void;
@@ -118,7 +128,7 @@ export default function ModalReviewForm({ onClose, initialReviewId}: ModalReview
       alert("와인 정보를 불러오는 중입니다. 잠시만 기다려 주세요.");
       return;
     }
-    const reviewData = {
+    const reviewData : ReviewData = {
       rating:values.rating,
       lightBold:values.lightBold,
       smoothTannic:values.smoothTannic,
@@ -126,9 +136,11 @@ export default function ModalReviewForm({ onClose, initialReviewId}: ModalReview
       softAcidic:values.softAcidic,
       aroma:values.aroma,
       content:values.content,
-      wineId:Number(wine.id),
     }
-    console.log("📢 보낼 JSON 데이터:", JSON.stringify(reviewData, null, 2));
+    
+    if(!isEditMode){
+      reviewData.wineId = Number(wine.id);
+    }
 
     try{
       if(isEditMode){
@@ -136,14 +148,18 @@ export default function ModalReviewForm({ onClose, initialReviewId}: ModalReview
         const response = await updateReview(reviewId!, reviewData)
         console.log("리뷰 수정완료",response);
         alert("리뷰가 수정되었습니다.");
-      }else{
-        const response = await createReview(reviewData);
+      }
+      if(!isEditMode && reviewData.wineId !==  undefined){
+        const response = await createReview({...reviewData, wineId: reviewData.wineId});
         console.log("리뷰등록 완료", response);
         alert("리뷰가 성공적으로 등록되었습니다.");
       }
       onClose();
     }catch(error){
       console.error("리뷰 등록 실패:", error);
+      if(error instanceof AxiosError){
+      console.error("리뷰 수정 실패:", error.response?.data);
+      }
     }finally{
     }
   };
