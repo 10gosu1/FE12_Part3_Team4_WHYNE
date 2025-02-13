@@ -8,12 +8,15 @@ export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { id } = useParams();
 
+  if(id === undefined){
+    return <div>로딩중 입니다 ...</div>
+  }
+
   // id 값이 배열일 경우 첫 번째 요소를 가져옴
   const wineId = Array.isArray(id) ? id[0] : id;
 
   return (
     <div>
-      와인 상세 페이지입니다. ID:{id}
       <CardDetail id={wineId} />
       <div>
         <button
@@ -25,6 +28,7 @@ export default function Page() {
         <ModalReviewAdd
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
+          initialReviewId={1620}
         />
       </div>
     </div>
