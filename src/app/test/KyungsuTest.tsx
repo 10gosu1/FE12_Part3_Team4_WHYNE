@@ -6,7 +6,7 @@ import WineTypeSelector from "@/components/filter/WineTypeSelector";
 import FlavorSlider from "@/components/Card/Flavor/FlavorSlider";
 import ModalFilter from "@/components/Modal/ModalFilter/ModalFilter";
 import { useState } from "react";
-
+import MonthlyChart from "@/components/Card/Monthly/MonthlyChart";
 
 export default function KyungsuTest() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +17,6 @@ export default function KyungsuTest() {
         <WineTypeSelector />
         <PriceSlider />
         <RatingFilter />
-        
       </div>
       <div>
         <FlavorSlider />
@@ -29,8 +28,9 @@ export default function KyungsuTest() {
         모달 열기
       </button>
       <ModalFilter isOpen={isOpen} setIsOpen={setIsOpen} />
-
+      <div className="bg-slate-400">
+        <MonthlyChart />
+      </div>
     </div>
-  )
+  );
 }
-

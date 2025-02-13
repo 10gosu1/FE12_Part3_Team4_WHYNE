@@ -33,7 +33,7 @@ export const fetchWines = async (params: {
 // ✅ 추천 와인 목록 조회
 export const fetchRecommendedWines = async (limit: number) => {
   try {
-    const response = await apiClient.get("/wines/recommend", {
+    const response = await apiClient.get("/wines/recommended", {
       params: { limit },
     });
     return response.data;
