@@ -1,32 +1,21 @@
 import React from "react";
 import Button from "@/components/Button/button";
 import clsx from "clsx";
-import { deleteReview } from "@/lib/api/review"; //  삭제 API 가져오기
 
 interface ModalTwoButtonProps {
   size: "md" | "sm";
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  reviewId: number; //  삭제할 리뷰 ID 추가
+  onConfirm: () => void; //  삭제 기능을 실행할 함수 (MoreMenu에서 전달)
 }
 
 const ModalTwoButton: React.FC<ModalTwoButtonProps> = ({
   size,
   isOpen,
   setIsOpen,
-  reviewId, //  리뷰 ID 받음
+  onConfirm, //  삭제 기능을 부모에서 받아옴
 }) => {
   if (!isOpen) return null;
-
-  //  삭제 기능 실행 함수 (모달 내부에서 처리)
-  const handleDeleteReview = async () => {
-    try {
-      await deleteReview(reviewId); //  API 호출
-      setIsOpen(false); //  삭제 후 모달 닫기
-    } catch (error) {
-      console.error("❌ 리뷰 삭제 실패:", error);
-    }
-  };
 
   const sizeStyles = {
     md: "w-[353px] h-[182px] p-[32px_16px_24px_16px] flex flex-col justify-between border border-[#CFDBEA] rounded-[16px]",
@@ -67,11 +56,14 @@ const ModalTwoButton: React.FC<ModalTwoButtonProps> = ({
             취소
           </Button>
 
-          {/* 삭제 버튼 - 삭제 API 호출 및 모달 닫기 */}
+          {/* 삭제 버튼 - onConfirm 실행 (MoreMenu.tsx에서 삭제 처리) */}
           <Button
             variant="modal"
             className={buttonSize[size]}
-            onClick={handleDeleteReview} //  삭제 실행
+            onClick={() => {
+              onConfirm(); //  삭제 실행
+              setIsOpen(false); //  모달 닫기
+            }}
           >
             삭제하기
           </Button>
