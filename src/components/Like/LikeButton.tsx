@@ -28,11 +28,13 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   // 본인이 작성한 리뷰인지 확인
   const isOwner = loggedInUserId === userId;
 
-  // 본인이 작성한 리뷰라면 Like 버튼을 렌더링하지 않음
-  if (isOwner) return null;
-
   // 좋아요 토글 시 실행되는 함수
   const handleLikeToggle = async () => {
+    if (isOwner) {
+      alert("본인의 리뷰에는 좋아요를 누를 수 없습니다.");
+      return;
+    }
+
     try {
       if (isLiked) {
         await unlikeReview(reviewId); // 좋아요 취소 API 호출
@@ -46,7 +48,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   };
 
   return (
-    <button onClick={handleLikeToggle}>
+    <button onClick={handleLikeToggle} disabled={isOwner}>
       {/* 좋아요 상태에 따라 다른 아이콘 표시 */}
       <Icon
         name={isLiked ? "liked" : "like"}
