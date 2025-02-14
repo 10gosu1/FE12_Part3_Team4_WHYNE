@@ -12,6 +12,7 @@ export default function FlavorSlider({
   softAcidic: externalSoftAcidic,
   setSoftAcidic: externalSetSoftAcidic,
   isReadOnly = false, // 읽기 전용 모드 추가 (기본값: false)
+  className,
 }: {
   lightBold?: number;
   setLightBold?: (value: number) => void;
@@ -22,6 +23,7 @@ export default function FlavorSlider({
   softAcidic?: number;
   setSoftAcidic?: (value: number) => void;
   isReadOnly?: boolean;
+  className?: string;
 }) {
   // ✅ 내부 상태 추가 (부모가 값을 안 넘기면 이걸 사용)
   const [localLightBold, setLocalLightBold] = useState(50);
@@ -100,10 +102,10 @@ export default function FlavorSlider({
               min="0"
               max="10"
               value={slider.value}
-              disabled={isReadOnly} //  읽기 전용 모드 적용
               onChange={(e) => handleChange(index, Number(e.target.value))}
-              className="w-[260px] h-[6px] appearance-none bg-[#CFDBEA] rounded-full cursor-pointer 
-                         accent-[#6A42DB]"
+              className={`w-[260px] h-[6px] appearance-none bg-[#CFDBEA] rounded-full
+                ${isReadOnly ? "pointer-events-none opacity-100" : "cursor-pointer"} 
+                accent-[#6A42DB]`}
             />
 
             <span className="text-[16px] font-medium text-[#2D3034]">
