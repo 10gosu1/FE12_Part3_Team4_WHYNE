@@ -1,35 +1,28 @@
 "use client";
-import { useState } from "react";
 import CardDetail from "@/components/Card/CardDetail";
-import ModalReviewAdd from "@/components/Modal/ModalReviewAdd/ModalReviewAdd";
 import { useParams } from "next/navigation";
+import ReviewStats from "./components/ReviewStats";
 
 export default function Page() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { id } = useParams();
 
-  if(id === undefined){
-    return <div>로딩중 입니다 ...</div>
+  if (id === undefined) {
+    return <div>로딩중 입니다 ...</div>;
   }
 
   // id 값이 배열일 경우 첫 번째 요소를 가져옴
   const wineId = Array.isArray(id) ? id[0] : id;
 
   return (
-    <div>
-      <CardDetail id={wineId} />
+    <div className="flex flex-col">
+      <div className="mt-[30px] mb-[40px] md:mt-[62px] md:mb-[60px]">
+        <CardDetail id={wineId} />
+      </div>
       <div>
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
-          onClick={() => setIsModalOpen(true)}
-        >
-          모달 열기
-        </button>
-        <ModalReviewAdd
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          initialReviewId={1620}
-        />
+        <div>
+          <p className="text-[20px] font-bold">리뷰 목록</p>
+        </div>
+        <ReviewStats wineId={wineId} />
       </div>
     </div>
   );

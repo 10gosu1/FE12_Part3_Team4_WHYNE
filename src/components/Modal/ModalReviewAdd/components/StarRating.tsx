@@ -4,7 +4,7 @@ const MAXRATING = 5;
 
 type StarRatingProps = {
   rating: number;
-  setRating: (value: number) => void;
+  setRating?: (value: number) => void;
 };
 
 export default function StarRating({ rating, setRating }: StarRatingProps) {
@@ -13,7 +13,10 @@ export default function StarRating({ rating, setRating }: StarRatingProps) {
       {Array.from({ length: MAXRATING }, (_, index) => {
         const starValue = index + 1;
         return (
-          <button key={starValue} onClick={() => setRating(starValue)}>
+          <button
+            key={starValue}
+            onClick={setRating ? () => setRating(starValue) : undefined}
+          >
             <Icon
               name="star"
               size={32}
