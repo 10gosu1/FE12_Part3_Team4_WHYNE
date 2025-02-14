@@ -13,14 +13,17 @@ interface ModalFilterProps {
 
 const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, setIsOpen }) => {
   // 필터 상태 관리
-  const [selectedType, setSelectedType] = useState("White");
+  // ✅ selectedType의 초기값을 "WHITE"로 변경
+  const [selectedType, setSelectedType] = useState<
+    "RED" | "WHITE" | "SPARKLING"
+  >("WHITE");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
   const [selectedRating, setSelectedRating] = useState("all");
 
   // 초기화 버튼 클릭 시 기본값으로 리셋
   const handleReset = () => {
-    setSelectedType("White");
+    setSelectedType("WHITE");
     setMinPrice(0);
     setMaxPrice(100000);
     setSelectedRating("all");

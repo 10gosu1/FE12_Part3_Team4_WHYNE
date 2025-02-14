@@ -1,51 +1,25 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 const PriceSlider = ({
-  minPrice: externalMinPrice,
-  maxPrice: externalMaxPrice,
-  setMinPrice: externalSetMinPrice,
-  setMaxPrice: externalSetMaxPrice,
+  minPrice,
+  maxPrice,
+  setMinPrice,
+  setMaxPrice,
 }: {
-  minPrice?: number;
-  maxPrice?: number;
-  setMinPrice?: (value: number) => void;
-  setMaxPrice?: (value: number) => void;
+  minPrice: number;
+  maxPrice: number;
+  setMinPrice: (value: number) => void;
+  setMaxPrice: (value: number) => void;
 }) => {
-  const sliderRef = useRef<HTMLDivElement | null>(null); // null일 수도 있음
-
-  // ✅ 내부 상태 추가 (부모에서 props를 안 넘겨주면 이걸 사용)
-  const [localMinPrice, setLocalMinPrice] = useState(0);
-  const [localMaxPrice, setLocalMaxPrice] = useState(100000);
-
-  // ✅ 부모에서 값을 넘겨주면 사용하고, 없으면 내부 상태 사용
-  const minPrice = externalMinPrice ?? localMinPrice;
-  const maxPrice = externalMaxPrice ?? localMaxPrice;
-  const setMinPrice = externalSetMinPrice ?? setLocalMinPrice;
-  const setMaxPrice = externalSetMaxPrice ?? setLocalMaxPrice;
-
-  // const handleStart = (type) => (event) => {
-  //   event.preventDefault();
-  //   const slider = sliderRef.current;
-  //   if (!slider) return;
-
-  //   const isTouch = event.type === "touchstart";
-
-  //   const handleMove = (moveEvent) => {
-  //     const movePoint = isTouch ? moveEvent.touches[0] : moveEvent;
-  //     const rect = slider.getBoundingClientRect();
-  //     const offsetX = movePoint.clientX - rect.left;
-  //     const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1);
-  //     let newValue = Math.round(percentage * 100000);
-
-  //     newValue = Math.round(newValue / 1000) * 1000;
+  const sliderRef = useRef<HTMLDivElement | null>(null);
 
   const handleStart =
     (type: string) => (event: React.MouseEvent | React.TouchEvent) => {
       event.preventDefault();
       const slider = sliderRef.current;
-      if (!slider) return; // slider가 null이면 함수 종료
+      if (!slider) return;
 
       const isTouch = event.type === "touchstart";
 
@@ -53,7 +27,7 @@ const PriceSlider = ({
         const movePoint = isTouch
           ? (moveEvent as TouchEvent).touches[0]
           : (moveEvent as MouseEvent);
-        const rect = slider.getBoundingClientRect(); // slider가 null이 아님을 보장
+        const rect = slider.getBoundingClientRect();
         const offsetX = movePoint.clientX - rect.left;
         const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1);
         let newValue = Math.round(percentage * 100000);
@@ -84,20 +58,14 @@ const PriceSlider = ({
   return (
     <div className="flex flex-col space-y-2 w-[263px] relative">
       {/* PRICE 타이틀 */}
-      <div
-        className="w-[252px] h-[32px] text-[20px] font-bold text-[#2D3034] leading-[32px]"
-        style={{ fontFamily: "Pretendard" }}
-      >
+      <div className="w-[252px] h-[32px] text-[20px] font-bold text-[#2D3034] leading-[32px]">
         PRICE
       </div>
 
       {/* 최소/최대 가격 표시 */}
-      <div
-        className="flex justify-between w-[252px] text-[16px] font-medium text-[#6A42DB] leading-[26px]"
-        style={{ fontFamily: "Pretendard" }}
-      >
-        <span>₩ {minPrice?.toLocaleString() || "0"}</span>
-        <span>₩ {maxPrice?.toLocaleString() || "100,000"}</span>
+      <div className="flex justify-between w-[252px] text-[16px] font-medium text-[#6A42DB] leading-[26px]">
+        <span>₩ {minPrice?.toLocaleString() ?? "0"}</span>
+        <span>₩ {maxPrice?.toLocaleString() ?? "100,000"}</span>
       </div>
 
       {/* 슬라이더 바 */}
