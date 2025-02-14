@@ -46,16 +46,18 @@ export const signIn = async (email: string, password: string) => {
   try {
     const response = await apiClient.post("/auth/signIn", { email, password });
 
-    const { accessToken, refreshToken } = response.data;
+    const { accessToken, refreshToken, user } = response.data;
 
     console.log("🛠 로그인 응답 데이터:", response.data);
-    console.log("🛠 저장할 accessToken:", accessToken);
 
-    localStorage.setItem("email", email);
+    // ✅ 토큰 저장
     localStorage.setItem("access_token", accessToken);
     localStorage.setItem("refresh_token", refreshToken);
 
-    console.log("✅ 토큰이 저장됨! localStorage 확인 필요");
+    // ✅ 사용자 ID 저장
+    localStorage.setItem("user_id", String(user.id));
+
+    console.log("✅ 로그인 완료 - user_id 저장:", user.id);
 
     return response.data;
   } catch (error) {

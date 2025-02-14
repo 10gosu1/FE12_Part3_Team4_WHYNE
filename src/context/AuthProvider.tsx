@@ -63,13 +63,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setUser(undefined);
-    router.replace("/");
+    router.push("/");
   }, [router]);
 
   useEffect(() => {
     const email = localStorage.getItem("email");
     const access = localStorage.getItem("access_token");
     const refresh = localStorage.getItem("refresh_token");
+
+    console.log("Checking login state...");
 
     // 토큰, 이메일 정보가 있으면 사용자 정보 조회
     if (access || refresh || email) {
@@ -88,6 +90,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     }
   }, [logout]);
+
+  useEffect(() => {
+    console.log("isLoading 상태 변경:", isLoading);
+    console.log("user 상태 변경:", user);
+  }, [isLoading, user]);
 
   return (
     <UserContext.Provider value={{ isLoading, user, setUser, logout }}>

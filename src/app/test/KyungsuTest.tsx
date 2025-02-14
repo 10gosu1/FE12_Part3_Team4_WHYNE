@@ -7,6 +7,7 @@ import FlavorSlider from "@/components/Card/Flavor/FlavorSlider";
 import ModalFilter from "@/components/Modal/ModalFilter/ModalFilter";
 import { useState } from "react";
 import MonthlyChart from "@/components/Card/Monthly/MonthlyChart";
+import WineList from "@/components/Card/Wine/WineList";
 
 export default function KyungsuTest() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,9 @@ export default function KyungsuTest() {
       <ModalFilter isOpen={isOpen} setIsOpen={setIsOpen} />
       <div className="bg-slate-400">
         <MonthlyChart />
+      </div>
+      <div className="flex justify-center">
+        <WineList />
       </div>
     </div>
   );

@@ -28,15 +28,23 @@ export default function ModalWineAdd({
   onSubmit,
   isEditMode,
 }: ModalWineAddProps) {
-  useEffect(() => {
-    if (wineToEdit) {
-      // wineToEdit이 있을 경우 수정 모드
-    }
-  }, [wineToEdit]);
-
   const handleWineSubmit = async (data: WineData) => {
-    console.log(data);
-    await onSubmit(data); // onSubmit을 호출하여 부모에서 처리
+    //   console.log(data);
+    //   await onSubmit(data); // onSubmit을 호출하여 부모에서 처리
+    //   onClose();
+    // };
+    // 수정 모드일 때는 Wine 객체에서 id를 제외한 WineData만 전달
+
+    const wineDataToSubmit: WineData = {
+      name: data.name,
+      price: data.price,
+      region: data.region,
+      type: data.type,
+      image: data.image,
+      avgRating: data.avgRating,
+    };
+    console.log(wineDataToSubmit);
+    await onSubmit(wineDataToSubmit); // onSubmit을 호출하여 부모에서 처리
     onClose();
   };
 
@@ -75,7 +83,7 @@ export default function ModalWineAdd({
             type: wineToEdit?.type as "RED" | "WHITE" | "SPARKLING",
             image: wineToEdit?.image ?? "",
             avgRating: wineToEdit?.avgRating ?? 0, // 기본값 설정
-            id: wineToEdit?.id ?? undefined, // id도 기본값을 설정
+            //id: wineToEdit?.id ?? undefined, // id도 기본값을 설정
           }}
           isEditMode={isEditMode}
         />

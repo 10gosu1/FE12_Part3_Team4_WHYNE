@@ -7,7 +7,6 @@ import {
   InputPassword,
   InputSelect,
   InputSearch,
-  InputProfileImage,
   InputTextarea,
   Label,
 } from "@/components/Input";
@@ -61,7 +60,7 @@ export default function HyeseonTest() {
         <br />
         <br />
         <Label htmlFor="file">프로필 사진 업로드</Label>
-        <InputProfileImage />
+        {/* <InputProfileImage /> */}
       </div>
       <div className="mt-8">
         <Link

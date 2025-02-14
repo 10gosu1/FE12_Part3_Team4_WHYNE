@@ -98,4 +98,3 @@ export default function MonthlyChart() {
     </div>
   );
 }
->>>>>>> 8d9d8d1792c91a08a8e19a7cabf2c932e6e93da6

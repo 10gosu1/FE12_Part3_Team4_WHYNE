@@ -1,8 +1,14 @@
+"use client";
+
 import Button from "@/components/Button/button";
+import MoreMenu from "@/components/Moremenu/MoreMenu";
+import LikeButton from "@/components/Like/LikeButton";
 
 export default function YuseopTest() {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 p-6">
+      <h2 className="text-lg font-bold">🔹 버튼 테스트</h2>
+
       {/* ✅ 소셜 로그인 버튼 */}
       <div className="flex flex-col gap-4">
         <Button variant="social" className="w-[400px] h-[52px]">
@@ -37,6 +43,19 @@ export default function YuseopTest() {
         <Button variant="modalCancel" className="w-[68px] h-[42px]">
           취소
         </Button>
+      </div>
+
+      {/* ✅ MoreMenu 테스트 추가 */}
+      <div className="flex flex-col gap-4 p-4 border rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">📌 MoreMenu 테스트</h3>
+        <MoreMenu reviewId={1670} userId={964} />
+      </div>
+      {/* ✅ 좋아요 버튼 테스트 */}
+      <div className="flex flex-col items-center gap-4 p-4 border rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">📌 좋아요 버튼 테스트</h3>
+
+        {/* ✅ LikeButton 테스트 - 임의의 리뷰 ID */}
+        <LikeButton reviewId={1626} initialLiked={false} userId={961} />
       </div>
     </div>
   );

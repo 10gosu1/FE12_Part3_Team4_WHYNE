@@ -14,7 +14,6 @@ export default function GnbUser() {
   if (isLoading) {
     return (
       <div className="flex gap-[20px] md:gap-[40px] relative">
-        {/* 스켈레톤 로딩 */}
         <Skeleton
           width="w-[45px]"
           height="h-[45px]"
