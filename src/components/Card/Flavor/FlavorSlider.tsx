@@ -12,7 +12,7 @@ export default function FlavorSlider({
   softAcidic: externalSoftAcidic,
   setSoftAcidic: externalSetSoftAcidic,
   isReadOnly = false, // 읽기 전용 모드 추가 (기본값: false)
-  className,
+  className = "",
 }: {
   lightBold?: number;
   setLightBold?: (value: number) => void;
@@ -83,7 +83,7 @@ export default function FlavorSlider({
   };
 
   return (
-    <div className="flex flex-col space-y-3 w-[480px]">
+    <div className={`flex flex-col space-y-3 w-[480px] ${className}`}>
       {sliders.map((slider, index) => (
         <div key={slider.label} className="flex items-center gap-2 w-full">
           {/* 왼쪽 버튼 */}
