@@ -9,7 +9,7 @@ import ModalReviewForm from "./components/ModalReviewForm";
 type ModalReviewAddProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (newReviewId: number) => void;
+  onSuccess?: (newReviewId: number) => void;
   initialReviewId?: number;
 };
 
@@ -42,7 +42,7 @@ export default function ModalReviewAdd({
         <ModalReviewHeader onClose={onClose} />
         <ModalReviewForm
           onClose={onClose}
-          onSuccess={onSuccess}
+          onSuccess={onSuccess!}
           initialReviewId={initialReviewId}
         />
       </div>
