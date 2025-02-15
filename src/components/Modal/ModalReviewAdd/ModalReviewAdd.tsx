@@ -9,12 +9,14 @@ import ModalReviewForm from "./components/ModalReviewForm";
 type ModalReviewAddProps = {
   isOpen: boolean;
   onClose: () => void;
-  initialReviewId?:number;
+  onSuccess?: (newReviewId: number) => void;
+  initialReviewId?: number;
 };
 
 export default function ModalReviewAdd({
   isOpen,
   onClose,
+  onSuccess,
   initialReviewId,
 }: ModalReviewAddProps) {
   useEffect(() => {
@@ -38,7 +40,11 @@ export default function ModalReviewAdd({
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 ">
       <div className="flex flex-col gap-10 w-full max-w-[528px]  p-6 rounded-lg bg-white shadow-lg ">
         <ModalReviewHeader onClose={onClose} />
-        <ModalReviewForm onClose={onClose} initialReviewId={initialReviewId} />
+        <ModalReviewForm
+          onClose={onClose}
+          onSuccess={onSuccess!}
+          initialReviewId={initialReviewId}
+        />
       </div>
     </div>
   );
