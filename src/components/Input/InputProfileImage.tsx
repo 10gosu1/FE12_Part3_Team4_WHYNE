@@ -68,6 +68,7 @@ export default function InputProfileImage({
       onMouseLeave={() => setIsHover(false)}
       onClick={() => imageRef.current?.click()}
       className="relative w-[60px] h-[60px] md:w-[80px] md:h-[80px] lg:w-[164px] lg:h-[164px] rounded-full overflow-hidden border border-gray-300 cursor-pointer"
+      style={{ borderRadius: "50%", overflow: "hidden" }}
     >
       {isUploading ? (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-200 animate-pulse">
@@ -77,12 +78,20 @@ export default function InputProfileImage({
         <>
           <Image
             src={imagePreview || "/images/common/no_profile.svg"}
-            layout="fill"
-            className="object-cover"
+            fill
+            style={{
+              objectFit: "cover",
+              borderRadius: "50%",
+              overflow: "hidden",
+            }}
+            className="!relative"
             alt="프로필 이미지"
           />
           {isHover && (
-            <div className="flex items-center justify-center absolute inset-0 bg-purple-100 bg-opacity-30">
+            <div
+              className="flex items-center justify-center absolute inset-0 bg-purple-100 bg-opacity-30 rounded-full"
+              style={{ objectFit: "cover" }}
+            >
               <Icon
                 name="photo"
                 size={40}

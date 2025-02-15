@@ -14,6 +14,8 @@ export const signInWithKakao = async (code: string) => {
 
     console.log("✅ 카카오 로그인 성공, 액세스 토큰:", accessToken);
     console.log("✅ 사용자 정보:", user);
+    // 이메일을 로컬 스토리지에 저장
+    localStorage.setItem("email", user.email);
     return { accessToken, refreshToken, user }; // 필요에 따라 리턴할 데이터 처리
   } catch (error) {
     if (error instanceof AxiosError) {

@@ -60,8 +60,12 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
           onImageChange={handleImageChange}
         />
         <div className="flex flex-col lg:items-center gap-[8px] lg:gap-[16px]">
-          <h1 className="lg:text-2xl-24px-bold text-gray-800">{newNickname}</h1>
-          <p className="lg:text-lg-16px-regular text-gray-500">{email}</p>
+          <h1 className="text-xl-20px-bold md:text-2xl-24px-bold text-gray-800">
+            {newNickname}
+          </h1>
+          <p className="text-md-14px-regular md:text-lg-16px-regular text-gray-500">
+            {email}
+          </p>
         </div>
       </div>
       <div className="flex flex-col md:flex-row lg:flex-col items-end gap-[6px] md:gap-[24px] lg:gap-[8px] w-full">

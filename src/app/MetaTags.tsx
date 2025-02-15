@@ -4,7 +4,10 @@ export default function MetaTags() {
   return (
     <>
       <meta charSet="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      />
       <meta name="description" content={metadata.description} />
       <meta name="keywords" content={metadata.keywords} />
       <meta name="author" content={metadata.author} />
