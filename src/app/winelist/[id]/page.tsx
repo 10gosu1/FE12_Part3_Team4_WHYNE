@@ -17,21 +17,27 @@ export default function Page() {
   // id 값이 배열일 경우 첫 번째 요소를 가져옴
   const wineId: string = Array.isArray(id) ? id[0] : id || "";
 
+  // 리뷰 id 가져오기
+  const fetchReviewsId = async () => {
+    try {
+      const data = await fetchWineById(wineId);
+      if (data.reviews) {
+        setReviewsId(data.reviews.map((review: { id: number }) => review.id));
+      }
+    } catch (error) {
+      console.error("리뷰 id가져오기 실패:", error);
+    }
+  };
+
+  const handleSuccess = (newReviewId: number) => {
+    console.log("새로운 리뷰 ID:", newReviewId);
+    setReviewsId((prevReviewId) => [newReviewId, ...prevReviewId]);
+  };
+
   useEffect(() => {
     if (!wineId) return;
-
-    const fetchReviewsId = async () => {
-      try {
-        const data = await fetchWineById(wineId);
-        if (data.reviews) {
-          setReviewsId(data.reviews.map((review: { id: number }) => review.id));
-        }
-      } catch (error) {
-        console.error("리뷰 id가져오기 실패:", error);
-      }
-    };
     fetchReviewsId();
-  }, [wineId]);
+  }, [wineId, reviewsId]);
 
   return (
     <div className="flex flex-col max-w-[1140px] w-full mx-auto">
@@ -70,6 +76,7 @@ export default function Page() {
             <ModalReviewAdd
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
+              onSuccess={handleSuccess}
             />
           </div>
         </div>

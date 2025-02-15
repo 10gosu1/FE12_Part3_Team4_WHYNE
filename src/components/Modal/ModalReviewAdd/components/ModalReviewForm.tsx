@@ -29,11 +29,13 @@ type ReviewData = {
 
 type ModalReviewFormProps = {
   onClose: () => void;
+  onSuccess: (newReviewId: number) => void;
   initialReviewId?: number;
 };
 
 export default function ModalReviewForm({
   onClose,
+  onSuccess,
   initialReviewId,
 }: ModalReviewFormProps) {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -149,14 +151,15 @@ export default function ModalReviewForm({
     }
 
     try {
+      let response;
       if (isEditMode) {
         // 수정 요청 PATCH
-        const response = await updateReview(reviewId!, reviewData);
+        response = await updateReview(reviewId!, reviewData);
         console.log("리뷰 수정완료", response);
         alert("리뷰가 수정되었습니다.");
       }
       if (!isEditMode && reviewData.wineId !== undefined) {
-        const response = await createReview({
+        response = await createReview({
           ...reviewData,
           wineId: reviewData.wineId,
         });
@@ -164,12 +167,14 @@ export default function ModalReviewForm({
         alert("리뷰가 성공적으로 등록되었습니다.");
       }
       onClose();
+      // 리뷰 등록후 재렌더링
+      console.log(response.id);
+      onSuccess(response.id);
     } catch (error) {
       console.error("리뷰 등록 실패:", error);
       if (error instanceof AxiosError) {
         console.error("리뷰 수정 실패:", error.response?.data);
       }
-    } finally {
     }
   };
 
