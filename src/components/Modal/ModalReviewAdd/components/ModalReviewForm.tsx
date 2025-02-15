@@ -3,6 +3,7 @@ import Button from "@/components/Button/button";
 import ModalReviewFlavor from "./ModalReviewFlavor";
 import ModalReviewRate from "./ModalReviewRate";
 import ModalReviewSmell from "./ModalReviewSmell";
+import ModalReviewHeader from "./ModalReviewHeader";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchWineById } from "@/lib/api/wine";
@@ -180,6 +181,7 @@ export default function ModalReviewForm({
 
   return (
     <div className="flex flex-col gap-10">
+      <ModalReviewHeader isEditMode={isEditMode} onClose={onClose} />
       <ModalReviewRate
         rating={values.rating}
         setRating={(rating) => setValues((prev) => ({ ...prev, rating }))}
