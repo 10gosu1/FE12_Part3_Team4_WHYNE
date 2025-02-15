@@ -10,6 +10,7 @@ export default function CardDetail({ id }: { id: string }) {
     region: "",
     image: "",
   });
+  const [loading, setLoading] = useState(true); //
 
   useEffect(() => {
     const fetchWine = async () => {
@@ -19,26 +20,33 @@ export default function CardDetail({ id }: { id: string }) {
         setWine(fetchedWine);
       } catch (error) {
         console.error("와인데이터 로딩 실패:", error);
+      } finally {
+        setLoading(false); //
       }
     };
     fetchWine();
   }, [id]);
 
-  const imageSrc = wine.image.startsWith("http")
-    ? wine.image
-    : "/images/wine/wine1.png";
+  const imageSrc =
+    wine.image && wine.image.startsWith("http")
+      ? wine.image
+      : "/images/wine/wine2.png";
 
   return (
     <div className="flex flex-wrap items-center max-w-[1140px] w-full h-auto sm:h-[260px] border border-[#CFDBEA] rounded-[16px] shadow-md sm:p-4">
       {/* 와인 이미지 */}
       <div className="flex-shrink-0 w-[180px] sm:w-[200px] md:w-[220px]">
-        <Image
-          src={imageSrc}
-          alt="와인 이미지"
-          width={220}
-          height={220}
-          className="w-full h-auto"
-        />
+        {loading ? ( // 로딩 중 스켈레톤 표시
+          <div className="w-[220px] h-[220px] bg-gray-200 animate-pulse rounded-lg"></div>
+        ) : (
+          <Image
+            src={imageSrc}
+            alt="와인 이미지"
+            width={220}
+            height={220}
+            className="rounded-lg"
+          />
+        )}
       </div>
 
       {/* 와인 정보 */}
