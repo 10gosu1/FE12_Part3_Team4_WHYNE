@@ -170,7 +170,6 @@ export default function ModalReviewForm({
       onSuccess(response.id);
     } catch (error) {
       console.error("리뷰 등록 실패:", error);
-      showToast("리뷰 등록에 실패했습니다.", "error");
     }
   };
 
