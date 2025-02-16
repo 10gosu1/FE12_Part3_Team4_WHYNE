@@ -37,7 +37,7 @@ export default function ModalReviewAdd({
 
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 ">
-      <div className="flex flex-col gap-10 w-full max-w-[528px]  p-6 rounded-lg bg-white shadow-lg ">
+      <div className="flex flex-col gap-10 w-full lg:max-w-[528px] sm:max-w-[375px]  p-6 rounded-lg bg-white shadow-lg ">
         <ModalReviewForm
           onClose={onClose}
           onSuccess={onSuccess!}

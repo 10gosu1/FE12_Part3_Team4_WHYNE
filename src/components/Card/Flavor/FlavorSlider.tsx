@@ -83,17 +83,19 @@ export default function FlavorSlider({
   };
 
   return (
-    <div className={`flex flex-col space-y-3 w-[480px] ${className}`}>
+    <div
+      className={`flex flex-col space-y-3 max-w-[480px] w-full ${className}`}
+    >
       {sliders.map((slider, index) => (
         <div key={slider.label} className="flex items-center gap-2 w-full">
           {/* 왼쪽 버튼 */}
-          <div className="w-[54px] h-[25px] bg-[#F2F4F8] text-[#9FACBD] text-[14px] font-semibold flex items-center justify-center rounded-md">
+          <div className="w-[54px] h-[25px] bg-[#F2F4F8] text-[#9FACBD] text-[14px] font-semibold flex items-center justify-center rounded-md whitespace-nowrap">
             {slider.label}
           </div>
 
           {/* 슬라이더 영역 */}
           <div className="flex items-center justify-between w-[402px]">
-            <span className="text-[16px] font-medium text-[#2D3034]">
+            <span className="text-[16px] font-medium text-[#2D3034] whitespace-nowrap">
               {slider.leftLabel}
             </span>
 
@@ -103,12 +105,12 @@ export default function FlavorSlider({
               max="10"
               value={slider.value}
               onChange={(e) => handleChange(index, Number(e.target.value))}
-              className={`w-[260px] h-[6px] appearance-none bg-[#CFDBEA] rounded-full
+              className={`max-w-[260px] h-[6px] appearance-none bg-[#CFDBEA] rounded-full
                 ${isReadOnly ? "pointer-events-none opacity-100" : "cursor-pointer"} 
                 accent-[#6A42DB]`}
             />
 
-            <span className="text-[16px] font-medium text-[#2D3034]">
+            <span className="text-[16px] font-medium text-[#2D3034] whitespace-nowrap">
               {slider.rightLabel}
             </span>
           </div>
