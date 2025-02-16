@@ -30,16 +30,22 @@ type ReviewData = {
 type ModalReviewFormProps = {
   onClose: () => void;
   initialReviewId?: number;
+  initialWineId?: number;
 };
 
 export default function ModalReviewForm({
   onClose,
   initialReviewId,
+  initialWineId,
 }: ModalReviewFormProps) {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [reviewId, setReviewId] = useState<number | null>(
     initialReviewId ?? null
   );
+
+  // ✅ `initialWineId`가 있으면 바로 사용, 없으면 `null`
+  const [wineId, setWineId] = useState<number | null>(initialWineId ?? null);
+
   const [wine, setWine] = useState<{
     id: number;
     name: string;
@@ -70,10 +76,20 @@ export default function ModalReviewForm({
   });
 
   const { id } = useParams();
-  const wineId = Array.isArray(id) ? id[0] : id;
+  const paramWineId = Array.isArray(id) ? id[0] : id; //변수중복 방지
 
   // 버튼 비활성화
   const disabled = !(values.rating && values.content);
+
+  // ✅ `initialWineId`가 있으면 바로 설정
+  useEffect(() => {
+    if (initialWineId) {
+      setWineId(initialWineId);
+    } else if (paramWineId) {
+      console.log("🔄 paramWineId 사용:", paramWineId);
+      setWineId(Number(paramWineId)); // ✅ paramWineId를 wineId로 설정
+    }
+  }, [initialWineId, paramWineId]);
 
   // 기존 리뷰 데이터를 가져오는 함수
   const fetchReviewData = async (reviewId: number) => {
@@ -82,7 +98,8 @@ export default function ModalReviewForm({
       const response = await fetchReviewById(reviewId);
       console.log("기존리뷰 데이터 가져오기:", response);
 
-      setValues({
+      setValues((prev) => ({
+        ...prev,
         rating: response.rating,
         content: response.content,
         lightBold: response.lightBold,
@@ -90,8 +107,12 @@ export default function ModalReviewForm({
         drySweet: response.drySweet,
         softAcidic: response.softAcidic,
         aroma: response.aroma,
-        wineId: response.wineId,
-      });
+        wineId: response.wineId ?? prev.wineId, // ✅ 기존 wineId 유지
+      }));
+      // ✅ `initialWineId`가 없을 때만 `setWineId` 실행
+      if (!initialWineId) {
+        setWineId(response.wineId);
+      }
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error(
@@ -102,19 +123,34 @@ export default function ModalReviewForm({
     }
   };
 
+  // ✅ `reviewId`가 변경될 때 기존 리뷰 데이터를 가져옴
+  useEffect(() => {
+    if (reviewId && isEditMode) {
+      fetchReviewData(reviewId);
+    }
+  }, [reviewId, isEditMode]);
+
+  // ✅ `wineId`가 존재할 경우에만 `fetchWineById` 실행
   useEffect(() => {
     const fetchWine = async () => {
       try {
-        if (!wineId) return;
-        const response = await fetchWineById(wineId);
-        const { id, name, image } = response;
-        setWine({ id, name, image });
+        if (!wineId || wineId === 0) {
+          console.log("🚨 fetchWineById 실행 안 함 - wineId가 0임");
+          return;
+        }
+        console.log("✅ fetchWineById 실행:", wineId);
+        const response = await fetchWineById(String(wineId));
+        setWine({
+          id: response.id,
+          name: response.name,
+          image: response.image,
+        });
       } catch (error) {
-        console.error("와인 데이터를 가져오는 중 오류 발생:", error);
+        console.error("❌ 와인 데이터를 가져오는 중 오류 발생:", error);
       }
     };
-    fetchWine();
-  }, [wineId, reviewId]);
+    if (wineId) fetchWine(); // ✅ wineId가 있을 때만 실행
+  }, [wineId]);
 
   useEffect(() => {
     if (reviewId && isEditMode) {
@@ -122,6 +158,7 @@ export default function ModalReviewForm({
     }
   }, [reviewId, isEditMode]);
 
+  // ✅ `initialReviewId`가 있으면 수정 모드 활성화
   useEffect(() => {
     if (initialReviewId) {
       setReviewId(initialReviewId);
@@ -129,8 +166,10 @@ export default function ModalReviewForm({
     }
   }, [initialReviewId]);
 
+  // ✅ 리뷰 저장 & 수정 API 요청
   const onSubmit = async () => {
     if (!wine.id || wine.id === 0) {
+      console.log("wine.id=", wine.id);
       alert("와인 정보를 불러오는 중입니다. 잠시만 기다려 주세요.");
       return;
     }
@@ -152,7 +191,7 @@ export default function ModalReviewForm({
       if (isEditMode) {
         // 수정 요청 PATCH
         const response = await updateReview(reviewId!, reviewData);
-        console.log("리뷰 수정완료", response);
+        console.log("리뷰 수정 완료", response);
         alert("리뷰가 수정되었습니다.");
       }
       if (!isEditMode && reviewData.wineId !== undefined) {
@@ -160,7 +199,7 @@ export default function ModalReviewForm({
           ...reviewData,
           wineId: reviewData.wineId,
         });
-        console.log("리뷰등록 완료", response);
+        console.log("리뷰 등록 완료", response);
         alert("리뷰가 성공적으로 등록되었습니다.");
       }
       onClose();
@@ -169,7 +208,6 @@ export default function ModalReviewForm({
       if (error instanceof AxiosError) {
         console.error("리뷰 수정 실패:", error.response?.data);
       }
-    } finally {
     }
   };
 

@@ -8,12 +8,14 @@ import { deleteReview } from "@/lib/api/review";
 interface MoreMenuProps {
   reviewId: number; // 리뷰 ID
   userId: number; // 리뷰 작성자 ID
+  wineId?: number;
   onDeleteSuccess?: () => void; // 삭제 성공 후 UI 업데이트 함수
 }
 
 const MoreMenu: React.FC<MoreMenuProps> = ({
   reviewId,
   userId,
+  wineId,
   onDeleteSuccess,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -41,7 +43,6 @@ const MoreMenu: React.FC<MoreMenuProps> = ({
       console.error("리뷰 삭제 실패:", error);
     }
   };
-
   return (
     <div className="relative">
       {/* ✅ 모든 리뷰에서 햄버거 메뉴(⋮) 보이게 수정 */}
@@ -82,6 +83,7 @@ const MoreMenu: React.FC<MoreMenuProps> = ({
         <ModalReviewAdd
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
+          wineId={wineId}
           initialReviewId={reviewId} // 기존 리뷰 ID 전달 → 수정 모드로 동작
         />
       )}

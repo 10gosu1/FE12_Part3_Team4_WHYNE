@@ -9,13 +9,15 @@ import ModalReviewForm from "./components/ModalReviewForm";
 type ModalReviewAddProps = {
   isOpen: boolean;
   onClose: () => void;
-  initialReviewId?:number;
+  initialReviewId?: number;
+  wineId?: number;
 };
 
 export default function ModalReviewAdd({
   isOpen,
   onClose,
   initialReviewId,
+  wineId,
 }: ModalReviewAddProps) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -38,7 +40,11 @@ export default function ModalReviewAdd({
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 ">
       <div className="flex flex-col gap-10 w-full max-w-[528px]  p-6 rounded-lg bg-white shadow-lg ">
         <ModalReviewHeader onClose={onClose} />
-        <ModalReviewForm onClose={onClose} initialReviewId={initialReviewId} />
+        <ModalReviewForm
+          onClose={onClose}
+          initialReviewId={initialReviewId}
+          initialWineId={wineId}
+        />
       </div>
     </div>
   );
