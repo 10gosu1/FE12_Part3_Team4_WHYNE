@@ -105,7 +105,7 @@ export default function FlavorSlider({
               max="10"
               value={slider.value}
               onChange={(e) => handleChange(index, Number(e.target.value))}
-              className={`max-w-[260px] h-[6px] appearance-none bg-[#CFDBEA] rounded-full
+              className={`max-w-[260px] w-full h-[6px] appearance-none bg-[#CFDBEA] rounded-full
                 ${isReadOnly ? "pointer-events-none opacity-100" : "cursor-pointer"} 
                 accent-[#6A42DB]`}
             />

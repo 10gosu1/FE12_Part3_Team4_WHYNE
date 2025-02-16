@@ -5,3 +5,9 @@
 body {
   font-family: var(--font-pretendard);
 }
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
