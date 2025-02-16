@@ -4,7 +4,7 @@ import ModalReviewFlavor from "./ModalReviewFlavor";
 import ModalReviewRate from "./ModalReviewRate";
 import ModalReviewSmell from "./ModalReviewSmell";
 import ModalReviewHeader from "./ModalReviewHeader";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchWineById } from "@/lib/api/wine";
 import { createReview, fetchReviewById, updateReview } from "@/lib/api/review";
@@ -80,31 +80,34 @@ export default function ModalReviewForm({
   const disabled = !(values.rating && values.content);
 
   // 기존 리뷰 데이터를 가져오는 함수
-  const fetchReviewData = async (reviewId: number) => {
-    if (!reviewId || !isEditMode) return;
-    try {
-      const response = await fetchReviewById(reviewId);
-      console.log("기존리뷰 데이터 가져오기:", response);
+  const fetchReviewData = useCallback(
+    async (reviewId: number) => {
+      if (!reviewId || !isEditMode) return;
+      try {
+        const response = await fetchReviewById(reviewId);
+        console.log("기존리뷰 데이터 가져오기:", response);
 
-      setValues({
-        rating: response.rating,
-        content: response.content,
-        lightBold: response.lightBold,
-        smoothTannic: response.smoothTannic,
-        drySweet: response.drySweet,
-        softAcidic: response.softAcidic,
-        aroma: response.aroma,
-        wineId: response.wineId,
-      });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error(
-          "수정하기 위해 기존 리뷰데이터 불러오기 실패:",
-          error.response?.data
-        );
+        setValues({
+          rating: response.rating,
+          content: response.content,
+          lightBold: response.lightBold,
+          smoothTannic: response.smoothTannic,
+          drySweet: response.drySweet,
+          softAcidic: response.softAcidic,
+          aroma: response.aroma,
+          wineId: response.wineId,
+        });
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          console.error(
+            "수정하기 위해 기존 리뷰데이터 불러오기 실패:",
+            error.response?.data
+          );
+        }
       }
-    }
-  };
+    },
+    [isEditMode]
+  );
 
   useEffect(() => {
     const fetchWine = async () => {
@@ -124,7 +127,7 @@ export default function ModalReviewForm({
     if (reviewId && isEditMode) {
       fetchReviewData(reviewId);
     }
-  }, [reviewId, isEditMode]);
+  }, [reviewId, isEditMode, fetchReviewData]);
 
   useEffect(() => {
     if (initialReviewId) {

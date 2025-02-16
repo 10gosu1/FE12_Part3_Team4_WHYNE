@@ -83,9 +83,7 @@ export default function FlavorSlider({
   };
 
   return (
-    <div
-      className={`flex flex-col space-y-3 max-w-[480px] w-full ${className}`}
-    >
+    <div className={`flex flex-col space-y-3 w-[480px] w-full ${className}`}>
       {sliders.map((slider, index) => (
         <div key={slider.label} className="flex items-center gap-2 w-full">
           {/* 왼쪽 버튼 */}
@@ -105,7 +103,7 @@ export default function FlavorSlider({
               max="10"
               value={slider.value}
               onChange={(e) => handleChange(index, Number(e.target.value))}
-              className={`max-w-[260px] w-full h-[6px] appearance-none bg-[#CFDBEA] rounded-full
+              className={`w-[260px] h-[6px] appearance-none bg-[#CFDBEA] rounded-full
                 ${isReadOnly ? "pointer-events-none opacity-100" : "cursor-pointer"} 
                 accent-[#6A42DB]`}
             />
