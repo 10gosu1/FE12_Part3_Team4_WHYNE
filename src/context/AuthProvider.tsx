@@ -112,6 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(UserContext);
+
   if (!context) {
     throw new Error(
       "useAuth는 반드시 AuthProvider 노드 안에서 사용돼야 합니다."

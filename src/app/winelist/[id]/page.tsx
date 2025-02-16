@@ -8,10 +8,14 @@ import { fetchWineById } from "@/lib/api/wine";
 import Image from "next/image";
 import Button from "@/components/Button/button";
 import ModalReviewAdd from "@/components/Modal/ModalReviewAdd/ModalReviewAdd";
+import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [reviewsId, setReviewsId] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user, isLoading } = useAuth(); // 현재 로그인된 사용자 정보 가져오기
+  const router = useRouter();
   const { id } = useParams();
 
   // id 값이 배열일 경우 첫 번째 요소를 가져옴
@@ -35,9 +39,24 @@ export default function Page() {
   };
 
   useEffect(() => {
+    if (!isLoading && !user) {
+      // 로그인 상태가 아니면 로그인 페이지로 리다이렉트
+      router.push("/signin");
+    }
+  }, [user, isLoading, router]);
+
+  useEffect(() => {
     if (!wineId) return;
     fetchReviewsId();
   }, [wineId, reviewsId]);
+
+  if (isLoading) {
+    return <p>로딩 중...</p>; // 로그인 상태 확인 중일 때 로딩 UI
+  }
+
+  if (!user) {
+    return null; // 로그인 상태가 아니면 페이지 내용 렌더링 안 함 (리다이렉트 대기)
+  }
 
   return (
     <div className="flex flex-col max-w-[1140px] w-full mx-auto">
