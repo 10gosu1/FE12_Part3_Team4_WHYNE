@@ -1,13 +1,14 @@
 import apiClient from "./api";
 
-interface WineData {
+export type WineData = {
+  id?: number;
   name: string;
-  type: "RED" | "WHITE" | "SPARKLING"; // 와인 종류
+  region: string;
+  image: string; // 선택적 이미지 URL
   price: number;
-  rating?: number; // 선택적 평점
-  description?: string; // 선택적 설명
-  imageUrl?: string; // 선택적 이미지 URL
-}
+  avgRating?: number; // 선택적 평점
+  type: "RED" | "WHITE" | "SPARKLING"; // 와인 종류
+};
 
 // ✅ 와인 생성
 export const createWine = async (wineData: WineData) => {
@@ -53,7 +54,7 @@ export const fetchRecommendedWines = async (limit: number) => {
 };
 
 // ✅ 와인 상세 조회
-export const fetchWineById = async (wineId: string) => {
+export const fetchWineById = async (wineId: number) => {
   try {
     const response = await apiClient.get(`/wines/${wineId}`);
     return response.data;
@@ -64,7 +65,7 @@ export const fetchWineById = async (wineId: string) => {
 };
 
 // ✅ 와인 수정
-export const updateWine = async (wineId: string, wineData: WineData) => {
+export const updateWine = async (wineId: number, wineData: WineData) => {
   try {
     const response = await apiClient.patch(`/wines/${wineId}`, wineData);
     return response.data;
@@ -75,7 +76,7 @@ export const updateWine = async (wineId: string, wineData: WineData) => {
 };
 
 // ✅ 와인 삭제
-export const deleteWine = async (wineId: string) => {
+export const deleteWine = async (wineId: number) => {
   try {
     const response = await apiClient.delete(`/wines/${wineId}`);
     return response.data;

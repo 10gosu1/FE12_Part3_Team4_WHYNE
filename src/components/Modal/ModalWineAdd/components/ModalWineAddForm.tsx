@@ -4,26 +4,12 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button/button";
 import { Input, InputFile, InputSelect, Label } from "@/components/Input";
 import { uploadImage } from "@/lib/api/image";
-import { useRouter } from "next/navigation";
+//import { useRouter } from "next/navigation";
+import { WineData } from "@/lib/api/wine";
 
 type ModalWineFormProps = {
-  initialData?: {
-    id?: number;
-    name: string;
-    price: number;
-    region: string;
-    type: "RED" | "WHITE" | "SPARKLING";
-    image: string;
-    avgRating: number;
-  };
-  onSubmit: (data: {
-    name: string;
-    price: number;
-    region: string;
-    type: "RED" | "WHITE" | "SPARKLING"; // 타입을 string에서 제한된 값으로 수정
-    image: string;
-    avgRating: number;
-  }) => Promise<void>;
+  initialData?: WineData; // 중복 타입 선언 제거
+  onSubmit: (data: WineData) => Promise<void>; // 중복 타입 선언 제거
   onClose: () => void;
   isEditMode: boolean;
 };
@@ -44,7 +30,7 @@ export default function ModalWineAddForm({
   // 수정된 부분
   const [formData, setFormData] = useState(initialData);
   const [file, setFile] = useState<File | null>(null);
-  const router = useRouter();
+  //const router = useRouter();
 
   useEffect(() => {
     if (isEditMode && initialData.image) {
@@ -86,20 +72,21 @@ export default function ModalWineAddForm({
     try {
       // POST 요청일 때는 imageUrl 포함해서 보내기
       const wineData = {
-        id: initialData.id, // ✅ 수정 시 ID 포함
+        id: initialData.id, // 수정 시 ID 포함
         name: formData.name,
         price: formData.price || 0,
         region: formData.region,
         type: formData.type,
         image: imageUrl,
-        avgRating: formData.avgRating, // ✅ avgRating 추가
+        avgRating: formData.avgRating, // avgRating 추가
       };
+      console.log("🚀 최종 전송 데이터:", wineData);
 
       // 수정인 경우 PATCH, 새로운 등록일 경우 POST
       await onSubmit(wineData);
 
       // 성공적으로 저장되면 상세 페이지로 리디렉션 (POST 요청이 완료되면 상세 페이지로 이동)
-      router.push("/");
+      //router.push("/");
       onClose();
     } catch (error) {
       console.error("와인 정보 저장 실패", error);
