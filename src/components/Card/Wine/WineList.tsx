@@ -90,8 +90,9 @@ export default function WineList() {
     }
 
     try {
-      // ✅ 불필요한 id, avgRating 제거 (일단 안쓰고있어서 underscore처리)
-      const { ...validWineData } = wineData;
+      // ✅ 불필요한 id, avgRating 제거
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, avgRating, ...validWineData } = wineData;
 
       // ✅ API 요청 데이터 확인 (id, avgRating 없는지 체크)
       console.log("📤 API 요청 데이터:", wineData);
