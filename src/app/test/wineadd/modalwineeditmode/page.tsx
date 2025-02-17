@@ -37,7 +37,7 @@ export default function WineEditPage() {
 
     async function fetchWine() {
       try {
-        const wine = await fetchWineById(wineId.toString());
+        const wine = await fetchWineById(wineId);
         setWineToEdit(wine);
       } catch (error) {
         console.error("와인 정보를 가져오는 중 오류 발생:", error);
@@ -61,7 +61,7 @@ export default function WineEditPage() {
     console.log("🔍 수정 요청 데이터:", wineData); // id를 제외한 데이터
 
     try {
-      await updateWine(wineId.toString(), wineData); // id를 제외한 데이터만 전달
+      await updateWine(wineId, wineData); // id를 제외한 데이터만 전달
       alert("👌🏻 와인 정보가 수정되었습니다.");
       router.push(`/`); // 수정 후 페이지 이동
     } catch (error) {

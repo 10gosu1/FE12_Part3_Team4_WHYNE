@@ -5,7 +5,7 @@ import { fetchWineById } from "@/lib/api/wine";
 import StarRating from "@/components/Modal/ModalReviewAdd/components/StarRating";
 
 type ReviewStatsProps = {
-  wineId: string;
+  wineId: number;
 };
 
 export default function ReviewStats({ wineId }: ReviewStatsProps) {

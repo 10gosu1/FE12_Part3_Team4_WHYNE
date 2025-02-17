@@ -3,7 +3,7 @@ import CardDetail from "@/components/Card/CardDetail";
 import { useParams } from "next/navigation";
 import ReviewStats from "./components/ReviewStats";
 import ReviewList from "./components/ReviewList";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchWineById } from "@/lib/api/wine";
 import Image from "next/image";
 import Button from "@/components/Button/button";
@@ -19,19 +19,21 @@ export default function Page() {
   const { id } = useParams();
 
   // id 값이 배열일 경우 첫 번째 요소를 가져옴
-  const wineId: string = Array.isArray(id) ? id[0] : id || "";
+  const wineId: number = Array.isArray(id)
+    ? parseInt(id[0] ?? "", 10)
+    : parseInt(id ?? "", 10) || 0;
 
   // 리뷰 id 가져오기
-  const fetchReviewsId = async () => {
+  const fetchReviewsId = useCallback(async () => {
     try {
       const data = await fetchWineById(wineId);
       if (data.reviews) {
         setReviewsId(data.reviews.map((review: { id: number }) => review.id));
       }
     } catch (error) {
-      console.error("리뷰 id가져오기 실패:", error);
+      console.error("리뷰 id 가져오기 실패:", error);
     }
-  };
+  }, [wineId]); // wineId가 변경될 때만 함수가 다시 생성됨 (usecallback으로 감싸기)
 
   const handleSuccess = (newReviewId: number) => {
     console.log("새로운 리뷰 ID:", newReviewId);
@@ -48,7 +50,7 @@ export default function Page() {
   useEffect(() => {
     if (!wineId) return;
     fetchReviewsId();
-  }, [wineId, reviewsId]);
+  }, [wineId, fetchReviewsId]); //의존성관리를 위한 fetchreviewsid 추가
 
   if (isLoading) {
     return <p>로딩 중...</p>; // 로그인 상태 확인 중일 때 로딩 UI

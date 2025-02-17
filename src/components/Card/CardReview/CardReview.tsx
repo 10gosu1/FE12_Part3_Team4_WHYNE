@@ -49,7 +49,11 @@ const ReviewCard = ({ review }: { review: ReviewData }) => {
             initialLiked={review.isLiked}
             userId={review.user.id}
           />
-          <MoreMenu reviewId={review.id} userId={review.user.id} />
+          <MoreMenu
+            reviewId={review.id}
+            userId={review.user.id}
+            editType="editReview"
+          />
         </div>
       </div>
 

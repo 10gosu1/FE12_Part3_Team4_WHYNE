@@ -25,7 +25,7 @@ interface ReviewData {
 }
 
 type ReviewListProps = {
-  wineId: string;
+  wineId: number;
   reviewsId: number[];
 };
 

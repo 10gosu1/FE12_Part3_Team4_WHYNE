@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { fetchWineById } from "@/lib/api/wine";
 import Image from "next/image";
 
-export default function CardDetail({ id }: { id: string }) {
+export default function CardDetail({ id }: { id: number }) {
   const [wine, setWine] = useState({
     name: "",
     price: 0,

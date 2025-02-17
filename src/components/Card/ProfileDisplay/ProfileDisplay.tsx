@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 interface ProfileDisplayProps {
   image?: string;
@@ -54,7 +55,7 @@ const ProfileDisplay: React.FC<ProfileDisplayProps> = ({
 
   return (
     <div className="flex items-center gap-3">
-      <img
+      <Image
         src={profileImage}
         alt="Profile"
         className="w-10 h-10 rounded-full"
