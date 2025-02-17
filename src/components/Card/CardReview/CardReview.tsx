@@ -34,6 +34,9 @@ interface ReviewData {
 const ReviewCard = ({ review }: { review: ReviewData }) => {
   const [isExpanded, setIsExpanded] = useState(false); //  접기/펼치기 상태 추가
 
+  // 리뷰가 수정되었는지 확인
+  const isEdited = review.createdAt !== review.updatedAt;
+
   return (
     <div className="flex flex-col w-auto max-w-[800px] p-4 border rounded-lg shadow bg-white space-y-6">
       {/* 1. 프로필 + 좋아요 + MoreMenu */}
@@ -42,7 +45,9 @@ const ReviewCard = ({ review }: { review: ReviewData }) => {
           image={review.user.image}
           nickname={review.user.nickname}
           updatedAt={review.updatedAt}
+          isEdited={isEdited}
         />
+
         <div className="flex items-center gap-2">
           <LikeButton
             reviewId={review.id}
