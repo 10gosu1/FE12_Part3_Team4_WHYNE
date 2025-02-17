@@ -1,6 +1,6 @@
 "use client";
 import MyReviews from "./MyReivews"; // 내가 쓴 후기 컴포넌트
-import MyWines from "./MyWines"; // ✅ 내가 등록한 와인 목록을 가져오는 컴포넌트
+import MyWines from "./MyWines"; // 내가 등록한 와인 목록을 가져오는 컴포넌트
 
 interface TabContentProps {
   activeTab: number;

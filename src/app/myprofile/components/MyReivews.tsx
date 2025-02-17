@@ -65,31 +65,31 @@ export default function MyReviews() {
     } finally {
       setLoading(false);
     }
-  }, [cursor, hasMore, loading]); // ✅ 의존성 배열 추가
+  }, [cursor, hasMore, loading]); // 의존성 배열 추가
 
-  // ✅ 최초 1회 데이터 로드
+  // 최초 1회 데이터 로드
   useEffect(() => {
     if (!didFetch.current) {
       didFetch.current = true;
-      loadMoreReviews(); // ✅ 최초 실행
+      loadMoreReviews(); // 최초 실행
     }
   }, [loadMoreReviews]);
 
-  // ✅ Intersection Observer로 무한 스크롤 구현
+  // Intersection Observer로 무한 스크롤 구현
   useEffect(() => {
     if (!observerRef.current || !hasMore || loading) return;
 
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !loading) {
-        loadMoreReviews(); // ✅ 옵저버가 감지되면 리뷰 로드
+        loadMoreReviews(); // 옵저버가 감지되면 리뷰 로드
       }
     });
 
     observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, [loading, hasMore, loadMoreReviews]); // ✅ 의존성 배열에 loadMoreReviews 추가
+  }, [loading, hasMore, loadMoreReviews]); // 의존성 배열에 loadMoreReviews 추가
 
-  /* ✅ 삭제 성공 후 UI 업데이트 */
+  /* 삭제 성공 후 UI 업데이트 */
   const handleDeleteSuccess = (deletedReviewId: number) => {
     setReviews((prevReviews) =>
       prevReviews.filter((review) => review.id !== deletedReviewId)

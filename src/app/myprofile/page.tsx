@@ -22,19 +22,16 @@ export default function MyProfile() {
 
   useEffect(() => {
     if (!user && !isLoading) {
-      // 로딩 상태가 아닐 때만 리디렉션
       router.push("/signin");
     } else if (user) {
-      // 유저가 로그인 되어있으면 리뷰와 와인 목록 가져오기
       Promise.all([fetchMyReviews(100), fetchMyWines(100)]).then(
         ([reviews, wines]) => {
-          setReviewCount(reviews.length || 0);
-          setWineCount(wines.length || 0);
+          setReviewCount(reviews.totalCount || 0); //
+          setWineCount(wines.totalCount || 0);
         }
       );
     }
   }, [user, isLoading, router]);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
