@@ -42,28 +42,40 @@ export default function WineList() {
   const { user } = useAuth(); // ✅ 사용자 로그인 정보 가져오기
 
   // ✅ 와인 목록 가져오기
+  // ✅ 와인 목록 가져오기
   useEffect(() => {
     async function getWines() {
       setLoading(true);
       try {
-        const rating =
-          selectedRating !== "all"
-            ? parseFloat(selectedRating.split("-")[0])
-            : undefined;
         const response = await fetchWines({
-          limit: 10,
+          limit: 1000,
           type: selectedType === "ALL" ? undefined : selectedType,
           minPrice,
           maxPrice,
-          rating,
+          rating:
+            selectedRating !== "all"
+              ? parseFloat(selectedRating.split("-")[0])
+              : undefined,
         });
 
-        setWines(
-          response.list.map((wine: Wine) => ({
-            ...wine,
-            recentReview: wine.recentReview ?? undefined, // ✅ `null`을 `undefined`로 변환
-          }))
-        );
+        const [minRating, maxRating] =
+          selectedRating !== "all"
+            ? selectedRating.split("-").map(parseFloat)
+            : [0, 5];
+
+        console.log("🎯 선택한 평점 필터:", { minRating, maxRating });
+
+        const filtered = response.list.filter((wine: Wine) => {
+          const avgRating = wine.avgRating ?? 0; // ✅ 기본값 0 처리
+          const roundedRating = Math.floor(avgRating * 10) / 10; // ✅ 소수점 1자리까지만 비교
+          console.log(
+            `📊 비교: ${wine.name} | avgRating: ${roundedRating}, min: ${minRating}, max: ${maxRating}`
+          );
+
+          return roundedRating >= minRating && roundedRating <= maxRating;
+        });
+
+        setWines(filtered);
       } catch (error) {
         console.error("⚠️ 와인 목록을 불러오지 못했습니다.", error);
         setError("와인 목록을 가져올 수 없습니다.");
@@ -107,10 +119,33 @@ export default function WineList() {
     }
   };
 
-  // ✅ 검색 필터 적용 (대소문자 무시)
-  const filteredWines = wines.filter((wine) =>
-    wine.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredWines = wines.filter((wine) => {
+    const matchesSearch = wine.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    let matchesRating = true;
+    if (selectedRating !== "all") {
+      const [minRating, maxRating] = selectedRating
+        .split("-")
+        .map((r) => parseFloat(r.trim())); // ✅ `parseFloat()` 적용
+      const wineRating =
+        wine.avgRating !== null && wine.avgRating !== undefined
+          ? parseFloat(wine.avgRating.toFixed(1))
+          : null;
+
+      console.log(
+        `📊 필터링 비교: ${wine.name} | avgRating: ${wineRating}, min: ${minRating}, max: ${maxRating}`
+      );
+
+      matchesRating =
+        wineRating !== null &&
+        wineRating >= minRating &&
+        wineRating <= maxRating; // ✅ `<=` 수정
+    }
+
+    return matchesSearch && matchesRating;
+  });
 
   // ✅ 정렬 기능 적용
   const sortedWines = [...filteredWines].sort((a, b) => {
@@ -145,12 +180,15 @@ export default function WineList() {
           selectedRating={selectedRating}
           setSelectedRating={setSelectedRating}
         />
-        <button
-          className="px-4 py-2 bg-[#6A42DB] text-white rounded-lg"
-          onClick={() => setIsModalOpen(true)}
-        >
-          와인 등록하기
-        </button>
+        {/* ✅ 로그인한 경우에만 버튼 표시 */}
+        {user && (
+          <button
+            className="px-4 py-2 bg-[#6A42DB] text-white rounded-lg"
+            onClick={() => setIsModalOpen(true)}
+          >
+            와인 등록하기
+          </button>
+        )}
       </div>
 
       {/* ✅ 검색창 & 정렬 옵션 */}
@@ -192,7 +230,15 @@ export default function WineList() {
           ) : error ? (
             <div className="text-red-500">{error}</div>
           ) : sortedWines.length > 0 ? (
-            sortedWines.map((wine) => <WineCard key={wine.id} wine={wine} />)
+            sortedWines.map((wine) => (
+              <WineCard
+                key={wine.id}
+                wine={{
+                  ...wine,
+                  avgRating: parseFloat(wine.avgRating.toFixed(1)), // ✅ 소수점 1자리까지 표시
+                }}
+              />
+            ))
           ) : (
             <div className="text-gray-500 text-center">
               검색 결과가 없습니다.
