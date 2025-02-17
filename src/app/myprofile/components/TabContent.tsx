@@ -1,4 +1,5 @@
 "use client";
+import MyList from "@/components/Card/Mylist/MyList";
 
 import MyReviews from "./MyReivews"; // 내가 쓴 후기 컴포넌트
 
@@ -13,9 +14,18 @@ export default function TabContent({ activeTab }: TabContentProps) {
         <MyReviews /> // ✅ 내가 쓴 후기 불러오기
       ) : activeTab === 2 ? (
         <div>
-          {" "}
-          {/* 내가 등록한 와인은 아직 미구현 상태 */}
-          <h2>내가 등록한 와인 (구현 예정)</h2>
+          <h2>내가 등록한 와인</h2>
+          <MyList
+            wine={{
+              reviewId: 819,
+              userId: 916,
+              name: "test",
+              price: 1000,
+              region: "수원",
+              image:
+                "	https://www.gangnam.wine/shopimages/vinit777/001002000432.png?1734080483",
+            }}
+          />
         </div>
       ) : null}
     </div>

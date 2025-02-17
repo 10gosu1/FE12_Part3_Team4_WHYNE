@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchWines } from "@/lib/api/wine";
+import { fetchWines, createWine } from "@/lib/api/wine";
+import { useAuth } from "@/context/AuthProvider"; // ✅ 로그인 정보 사용
 import WineCard from "./WineCard";
 import WineTypeSelector from "@/components/filter/WineTypeSelector";
 import PriceSlider from "@/components/filter/PriceSlider";
@@ -17,7 +18,7 @@ type Wine = {
   price: number;
   avgRating: number;
   reviewCount: number;
-  recentReview?: { content: string } | undefined; // ✅ `null` 대신 `undefined`
+  recentReview?: { content: string } | undefined;
 };
 
 export default function WineList() {
@@ -25,12 +26,12 @@ export default function WineList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ✅ 필터 상태 추가
+  // ✅ 필터 상태
   const [selectedType, setSelectedType] = useState<
-    "RED" | "WHITE" | "SPARKLING"
-  >("WHITE");
-  const [minPrice, setMinPrice] = useState<number>(1000);
-  const [maxPrice, setMaxPrice] = useState<number>(80000);
+    "RED" | "WHITE" | "SPARKLING" | "ALL"
+  >("ALL");
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(1000000);
   const [selectedRating, setSelectedRating] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<
@@ -38,8 +39,12 @@ export default function WineList() {
   >("추천순");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const { user } = useAuth(); // ✅ 사용자 로그인 정보 가져오기
+
+  // ✅ 와인 목록 가져오기
   useEffect(() => {
     async function getWines() {
+      setLoading(true);
       try {
         const rating =
           selectedRating !== "all"
@@ -47,26 +52,60 @@ export default function WineList() {
             : undefined;
         const response = await fetchWines({
           limit: 10,
-          type: selectedType,
+          type: selectedType === "ALL" ? undefined : selectedType,
           minPrice,
           maxPrice,
           rating,
         });
+
         setWines(
           response.list.map((wine: Wine) => ({
             ...wine,
             recentReview: wine.recentReview ?? undefined, // ✅ `null`을 `undefined`로 변환
           }))
         );
-        setLoading(false);
       } catch (error) {
         console.error("⚠️ 와인 목록을 불러오지 못했습니다.", error);
         setError("와인 목록을 가져올 수 없습니다.");
+      } finally {
         setLoading(false);
       }
     }
     getWines();
   }, [selectedType, minPrice, maxPrice, selectedRating]);
+
+  // ✅ 와인 추가 (모달에서 등록)
+  const handleAddWine = async (wineData: {
+    name: string;
+    region: string;
+    image: string;
+    price: number;
+    type: "RED" | "WHITE" | "SPARKLING";
+  }) => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      console.log("📤 API 요청 데이터:", wineData);
+      const createdWine = await createWine(wineData);
+
+      alert("🍷 새로운 와인이 등록되었습니다.");
+      setWines((prevWines) => [
+        {
+          ...createdWine,
+          avgRating: createdWine.avgRating || 0,
+          reviewCount: createdWine.reviewCount || 0,
+        },
+        ...prevWines,
+      ]);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("❌ 와인 생성 중 오류 발생:", error);
+      alert("❌ 와인 등록 실패. 다시 시도해 주세요.");
+    }
+  };
 
   // ✅ 검색 필터 적용 (대소문자 무시)
   const filteredWines = wines.filter((wine) =>
@@ -87,9 +126,6 @@ export default function WineList() {
         return b.avgRating - a.avgRating;
     }
   });
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="flex gap-10 p-8">
@@ -151,7 +187,11 @@ export default function WineList() {
 
         {/* ✅ 와인 리스트 */}
         <div className="grid grid-cols-1 gap-[62px]">
-          {sortedWines.length > 0 ? (
+          {loading ? (
+            <div>Loading...</div>
+          ) : error ? (
+            <div className="text-red-500">{error}</div>
+          ) : sortedWines.length > 0 ? (
             sortedWines.map((wine) => <WineCard key={wine.id} wine={wine} />)
           ) : (
             <div className="text-gray-500 text-center">
@@ -165,9 +205,7 @@ export default function WineList() {
       <ModalWineAdd
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={async () => {
-          setIsModalOpen(false);
-        }}
+        onSubmit={handleAddWine}
         isEditMode={false}
       />
     </div>

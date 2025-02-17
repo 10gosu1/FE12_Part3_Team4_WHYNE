@@ -22,8 +22,8 @@ export default function ModalReviewFlavor({
   setSoftAcidic,
 }: ModalReviewFlavorProps) {
   return (
-    <div>
-      <p className="xl-20px-bold">와인의 맛은 어땠나요?</p>
+    <div className="flex flex-col w-full gap-6">
+      <p className="text-xl-20px-bold">와인의 맛은 어땠나요?</p>
       <FlavorSlider
         lightBold={lightBold}
         setLightBold={setLightBold}

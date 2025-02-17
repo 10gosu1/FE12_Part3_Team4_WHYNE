@@ -1,8 +1,12 @@
+"use client";
+
+import { useRouter } from "next/navigation"; // ✅ Next.js router 추가
 import Gnb from "@/components/Gnb";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function Home() {
+  const router = useRouter(); // ✅ router 사용
+
   return (
     <main className="flex flex-col items-center w-full bg-[#F2F4F8]">
       <div className="w-[1140px]">
@@ -59,9 +63,13 @@ export default function Home() {
             </div>
           </section>
 
-          <span className="w-[279px] h-[50px] bg-[#6A42DB] text-white flex justify-center items-center rounded-[100px] mt-[104px] mx-[820.5px] mb-[109px] cursor-pointer">
-            <Link href="/winelist">와인 보러가기</Link>
-          </span>
+          {/* ✅ 버튼 클릭 시 바로 이동 (이중 클릭 해결) */}
+          <button
+            onClick={() => router.push("/winelist")} // ✅ 클릭 시 바로 이동
+            className="w-[279px] h-[50px] bg-[#6A42DB] text-white flex justify-center items-center rounded-[100px] mt-[104px] mx-[820.5px] mb-[109px] cursor-pointer"
+          >
+            와인 보러가기
+          </button>
         </div>
       </div>
     </main>

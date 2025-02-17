@@ -39,7 +39,7 @@ export default function GnbUser() {
           <Dropdown
             trigger={
               <button className="relative">
-                <div className="h-[45px] w-[45px] border border-gray-300 rounded-full overflow-hidden">
+                <div className="w-[35px] h-[35px] md:h-[45px] md:w-[45px] border border-gray-300 rounded-full overflow-hidden">
                   <Image
                     style={{ objectFit: "cover" }}
                     fill

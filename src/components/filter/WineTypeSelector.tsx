@@ -6,8 +6,8 @@ const WineTypeSelector = ({
   selectedType,
   setSelectedType,
 }: {
-  selectedType: "RED" | "WHITE" | "SPARKLING";
-  setSelectedType: (type: "RED" | "WHITE" | "SPARKLING") => void;
+  selectedType: "RED" | "WHITE" | "SPARKLING" | "ALL";
+  setSelectedType: (type: "RED" | "WHITE" | "SPARKLING" | "ALL") => void;
 }) => {
   const buttons = [
     {
@@ -25,6 +25,10 @@ const WineTypeSelector = ({
     },
   ];
 
+  const handleTypeSelect = (type: "RED" | "WHITE" | "SPARKLING" | "ALL") => {
+    setSelectedType(selectedType === type ? "ALL" : type); // ✅ 같은 버튼 클릭 시 "ALL"로 변경
+  };
+
   return (
     <div className="flex flex-col items-start space-y-2">
       <div
@@ -37,7 +41,7 @@ const WineTypeSelector = ({
         {buttons.map((btn) => (
           <button
             key={btn.value}
-            onClick={() => setSelectedType(btn.value)} // ✅ 부모 컴포넌트에서 상태 변경
+            onClick={() => handleTypeSelect(btn.value)}
             className={`h-[42px] px-[18px] py-[10px] border border-[#CFDBEA] ${btn.width} ${btn.border} rounded-full 
               ${selectedType === btn.value ? "bg-[#6A42DB] text-white" : "bg-white text-black"}`}
           >

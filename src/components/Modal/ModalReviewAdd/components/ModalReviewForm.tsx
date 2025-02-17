@@ -3,11 +3,13 @@ import Button from "@/components/Button/button";
 import ModalReviewFlavor from "./ModalReviewFlavor";
 import ModalReviewRate from "./ModalReviewRate";
 import ModalReviewSmell from "./ModalReviewSmell";
-import { useEffect, useState } from "react";
+import ModalReviewHeader from "./ModalReviewHeader";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchWineById } from "@/lib/api/wine";
 import { createReview, fetchReviewById, updateReview } from "@/lib/api/review";
 import { AxiosError } from "axios";
+import { showToast } from "@/components/Toast/Toast";
 
 // 1.와인 리뷰에 필요한 값들을 상태값으로 정리.
 // 2.(rating,content)값은 ModalReviewRate컴포넌트 / (lightBold, smoothTannic, drySweet, softAcidic)값은 ModalReviewFlavor 컴포넌트 / (aroma[])값은 ModalReviewSmell 컴포넌트
@@ -29,12 +31,14 @@ type ReviewData = {
 
 type ModalReviewFormProps = {
   onClose: () => void;
+  onSuccess: (newReviewId: number) => void;
   initialReviewId?: number;
   initialWineId?: number;
 };
 
 export default function ModalReviewForm({
   onClose,
+  onSuccess,
   initialReviewId,
   initialWineId,
 }: ModalReviewFormProps) {
@@ -120,8 +124,9 @@ export default function ModalReviewForm({
           error.response?.data
         );
       }
-    }
-  };
+    },
+    [isEditMode]
+  );
 
   // ✅ `reviewId`가 변경될 때 기존 리뷰 데이터를 가져옴
   useEffect(() => {
@@ -156,7 +161,7 @@ export default function ModalReviewForm({
     if (reviewId && isEditMode) {
       fetchReviewData(reviewId);
     }
-  }, [reviewId, isEditMode]);
+  }, [reviewId, isEditMode, fetchReviewData]);
 
   // ✅ `initialReviewId`가 있으면 수정 모드 활성화
   useEffect(() => {
@@ -188,21 +193,21 @@ export default function ModalReviewForm({
     }
 
     try {
+      let response;
       if (isEditMode) {
         // 수정 요청 PATCH
-        const response = await updateReview(reviewId!, reviewData);
-        console.log("리뷰 수정 완료", response);
-        alert("리뷰가 수정되었습니다.");
+        response = await updateReview(reviewId!, reviewData);
+        showToast("리뷰가 수정되었습니다.", "success");
       }
       if (!isEditMode && reviewData.wineId !== undefined) {
-        const response = await createReview({
+        response = await createReview({
           ...reviewData,
           wineId: reviewData.wineId,
         });
-        console.log("리뷰 등록 완료", response);
-        alert("리뷰가 성공적으로 등록되었습니다.");
+        showToast("리뷰가 성공적으로 등록되었습니다.", "success");
       }
       onClose();
+      onSuccess(response.id);
     } catch (error) {
       console.error("리뷰 등록 실패:", error);
       if (error instanceof AxiosError) {
@@ -213,6 +218,7 @@ export default function ModalReviewForm({
 
   return (
     <div className="flex flex-col gap-10">
+      <ModalReviewHeader isEditMode={isEditMode} onClose={onClose} />
       <ModalReviewRate
         rating={values.rating}
         setRating={(rating) => setValues((prev) => ({ ...prev, rating }))}
