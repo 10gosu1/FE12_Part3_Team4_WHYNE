@@ -1,4 +1,4 @@
-# 🙋 WHYNE
+# 🍷 WHYNE
 
 사용자가 다양한 와인에 대한 리뷰를 보고, 구매 여부를 판단해볼 수 있는 플랫폼입니다.
 <br><br>
@@ -11,7 +11,7 @@
 
 ## 🕰️ 개발기간
 
-**25.02.03 - 25.12.19**
+**25.02.03 - 25.02.19**
 <br><br>
 
 ## 💫 팀원소개
@@ -30,7 +30,7 @@
 <br><br>
 **🧑‍🤝‍🧑 협업툴**
 <br><br>
-![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) ![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white) ![Prettier](https://img.shields.io/badge/prettier-%23F7B93E.svg?style=for-the-badge&logo=prettier&logoColor=black)
+![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white) ![Prettier](https://img.shields.io/badge/prettier-%23F7B93E.svg?style=for-the-badge&logo=prettier&logoColor=black)
 <br><br>
 **🧑‍💻 개발 툴**
 
@@ -44,41 +44,55 @@
 
 ## 📍 팀원별 역할 분담
 
-- 작성해야함
+- 공용 컴포넌트 제작 -> 페이지 제작 -> 오류 테스트 -> 발표 자료 준비
 
 ### 👨‍💻 이유섭
 
-- 페이지 :
-- 공통 :
+- 프로젝트 전반적인 관리
+- 발표 자료 준비
+- 페이지 : 마이 프로필
+- 공통 컴포넌트 : Button, Modal - 투버튼, Card - my, Card - review
 - 기능
-  - 페이지 : 설명
+  - axios 이용한 api 추상화
+  - 내가 작성한 후기, 내가 등록한 와인 탭 클릭시 각 항목에 맞는 카드 리스트 출력
+  - 각 항목의 카드의 햄버거 버튼 클릭 시 수정, 삭제하기 기능
 
 ### 👨‍💻 서경수
 
-- 페이지 :
-- 공통 :
+- git, vercel 관리
+- 발표 자료 준비
+- 페이지 : 메인 랜딩 페이지, 와인 목록 페이지
+- 공통 : Modal -필터, Filter, Floavor, Card - wine, Card - monthly
 - 기능
-  - 페이지 : 설명
+  - 상단 추천 와인 랜덤 출력
+  - 와인 목록 검색 기능
+  - 타임, 가격, 별점으로 와인을 필터링
+  - 와인 카드를 클릭시 해당 와인의 상세 페이지로 이동
+  - 와인 맛, 향을 입력 기능
+  - 초기값으로 와인 전체 타입도 볼 수 있게 수정
 
 ### 🧑‍💻 남기연
 
-- 페이지 :
-- 공통 :
+- 발표 자료 준비
+- 페이지 : 와인 상세 페이지
+- 공통 : Modal - 리뷰 등록/ 수정, Icon, Card - mylist, Card - detail
 - 기능
-  - 페이지 : 설명
+  - 아이콘 컴포넌트 화
+  - 와인 상세 정보와 리뷰 목록 출력
+  - 리뷰 등록/수정 클릭시 리뷰 등록/수정 기능을 가진 모달 생성
+  - 기본 alert 창 대신 toast 기능 구현
 
 ### 👩‍💻 김혜선
 
-- 페이지 :
-- 공통 :
+- 발표 자료 준비 및 발표
+- 페이지 : Gnb, Input, Dropdown, Modal - 와인 등록/ 수정
+- 공통 : 로그인, 회원가입 페이지
 - 기능
-  - 페이지 : 설명
+  - Gnb에서 사용자 로그인 상태에 따라 다른 값 출력
+  - 로그인, 회원가입 유효성 검사
+  - 카카오 로그인 연결
+  - 와인 등록/수정 클릭시 와인 등록/수정 기능을 가진 모달 생성
     <br><br>
-
-## 🏁 팀 규칙
-
-- [규칙 상세 링크]()  
-  <br><br>
 
 ## 👀 프로젝트 미리보기
 
@@ -94,11 +108,11 @@
 
 <br><br>
 
-### 4. 와인 목록 페이지 (/wines)
+### 4. 와인 목록 페이지 (/winelist)
 
 <br><br>
 
-### 5. 와인 상세 페이지 (/wines/{windid})
+### 5. 와인 상세 페이지 (/winelist/{windid})
 
 <br><br>
 

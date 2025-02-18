@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Button from "@/components/Button/button";
 import { Input, InputProfileImage } from "@/components/Input";
 import { updateUserProfile } from "@/lib/api/user";
+import { showToast } from "@/components/Toast/Toast";
 
 interface ProfileSettingProps {
   nickname: string;
@@ -41,11 +42,15 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
     try {
       const updatedUser = await updateUserProfile(newNickname, newImage);
       setUser(updatedUser);
-      alert("프로필이 성공적으로 업데이트되었습니다!"); // 실제로는 Toast 사용을 권장합니다
+      showToast("프로필이 성공적으로 업데이트되었습니다!", "success");
+
+      //alert("프로필이 성공적으로 업데이트되었습니다!");
     } catch (error) {
       if (error instanceof Error) {
         console.error("❌ 프로필 업데이트 실패:", error);
-        alert("프로필 업데이트 중 오류가 발생했습니다.");
+        showToast("프로필 업데이트 중 오류가 발생했습니다.", "error");
+
+        //alert("프로필 업데이트 중 오류가 발생했습니다.");
       }
     } finally {
       setIsUpdating(false); // 로딩 상태 해제
