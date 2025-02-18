@@ -6,8 +6,6 @@ import { Input, InputFile, InputSelect, Label } from "@/components/Input";
 import { uploadImage } from "@/lib/api/image";
 //import { useRouter } from "next/navigation";
 import { WineData } from "@/lib/api/wine";
-//import { useRouter } from "next/navigation";
-import { WineData } from "@/lib/api/wine";
 
 type ModalWineFormProps = {
   initialData?: WineData; // 중복 타입 선언 제거
