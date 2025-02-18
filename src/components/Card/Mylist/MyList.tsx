@@ -17,13 +17,13 @@ export default function MyList({ wine, onDeleteSuccess }: MyListProps) {
   return (
     <div className="relative flex flex-wrap items-center max-w-[1140px] w-full h-auto sm:h-[260px] border border-[#CFDBEA] rounded-[16px] shadow-md sm:p-4">
       {/* 와인 이미지 */}
-      <div className="relative flex-shrink-0 w-[180px] sm:w-[200px] md:w-[220px]">
+      <div className="w-[200px] h-[200px] overflow-hidden rounded-lg">
         <Image
           src={wine.image}
           alt={wine.name}
-          width={60}
-          height={60}
-          className="object-cover rounded-lg mx-auto"
+          width={200}
+          height={200}
+          className="object-cover w-full h-full"
         />
       </div>
 
