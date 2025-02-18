@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "@/components/Button/button";
 import clsx from "clsx";
 
@@ -16,6 +16,14 @@ const ModalTwoButton: React.FC<ModalTwoButtonProps> = ({
   onConfirm, //  삭제 기능을 부모에서 받아옴
 }) => {
   if (!isOpen) return null;
+
+  useEffect(() => {
+    // ✅ 모달이 열릴 때 body 스크롤 방지
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
 
   const sizeStyles = {
     md: "w-[353px] h-[182px] p-[32px_16px_24px_16px] flex flex-col justify-between border border-[#CFDBEA] rounded-[16px]",
@@ -38,38 +46,44 @@ const ModalTwoButton: React.FC<ModalTwoButtonProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+    <>
+      {/* ✅ 모달 배경 (z-index 높이고 pointer-events 조정) */}
       <div
-        className={clsx(
-          "bg-white shadow-md flex items-center gap-4",
-          sizeStyles[size]
-        )}
-      >
-        <p className={textStyles[size]}>정말 삭제하시겠습니까?</p>
-        <div className={buttonContainerStyles[size]}>
-          {/* 취소 버튼 - 모달 닫기 */}
-          <Button
-            variant="modalCancel"
-            className={buttonSize[size]}
-            onClick={() => setIsOpen(false)}
-          >
-            취소
-          </Button>
+        className="fixed inset-0 bg-black bg-opacity-30 z-[1000]"
+        onClick={() => setIsOpen(false)} // ✅ 배경 클릭 시 모달 닫기
+      ></div>
 
-          {/* 삭제 버튼 - onConfirm 실행 (MoreMenu.tsx에서 삭제 처리) */}
-          <Button
-            variant="modal"
-            className={buttonSize[size]}
-            onClick={() => {
-              onConfirm(); //  삭제 실행
-              setIsOpen(false); //  모달 닫기
-            }}
-          >
-            삭제하기
-          </Button>
+      {/* ✅ 모달 박스 (드롭다운보다 위에 배치) */}
+      <div className="fixed inset-0 flex items-center justify-center z-[1010]">
+        <div
+          className={clsx(
+            "bg-white shadow-md flex items-center gap-4",
+            sizeStyles[size]
+          )}
+        >
+          <p className={textStyles[size]}>정말 삭제하시겠습니까?</p>
+          <div className={buttonContainerStyles[size]}>
+            <Button
+              variant="modalCancel"
+              className={buttonSize[size]}
+              onClick={() => setIsOpen(false)}
+            >
+              취소
+            </Button>
+            <Button
+              variant="modal"
+              className={buttonSize[size]}
+              onClick={() => {
+                onConfirm();
+                setIsOpen(false);
+              }}
+            >
+              삭제하기
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
