@@ -31,7 +31,7 @@ type ReviewData = {
 
 type ModalReviewFormProps = {
   onClose: () => void;
-  onSuccess?: (newReviewId: number) => void;
+  onSuccess: (newReviewId: number) => void;
   initialReviewId?: number;
   initialWineId?: number;
 };
@@ -134,7 +134,7 @@ export default function ModalReviewForm({
     if (reviewId && isEditMode) {
       fetchReviewData(reviewId);
     }
-  }, [reviewId, isEditMode, fetchReviewData]); // useEffect 의존성 배열에 fetchReviewData 추가
+  }, [reviewId, isEditMode, fetchReviewData]);
 
   // ✅ `wineId`가 존재할 경우에만 `fetchWineById` 실행
   useEffect(() => {
@@ -145,7 +145,7 @@ export default function ModalReviewForm({
           return;
         }
         console.log("✅ fetchWineById 실행:", wineId);
-        const response = await fetchWineById(wineId);
+        const response = await fetchWineById(Number(wineId));
         setWine({
           id: response.id,
           name: response.name,

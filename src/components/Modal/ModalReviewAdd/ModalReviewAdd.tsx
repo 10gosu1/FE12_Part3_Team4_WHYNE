@@ -42,7 +42,7 @@ export default function ModalReviewAdd({
       <div className="flex flex-col gap-10 w-full max-w-[375px] lg:max-w-[528px] max-h-[90vh] p-6 rounded-lg bg-white shadow-lg overflow-y-auto">
         <ModalReviewForm
           onClose={onClose}
-          onSuccess={onSuccess}
+          onSuccess={onSuccess!}
           initialReviewId={initialReviewId}
           initialWineId={wineId}
         />
