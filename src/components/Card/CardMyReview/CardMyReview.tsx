@@ -30,6 +30,7 @@ interface ReviewData {
 interface CardMyReviewProps {
   review: ReviewData;
   onDeleteSuccess?: () => void; // ✅ 삭제 후 UI 업데이트를 위한 프롭 추가
+  onUpdateSuccess?: () => void; // ✅ 수정 후 UI 업데이트를 위한 프롭 추가
 }
 
 const formatTimeAgo = (updatedAt: string) => {
@@ -51,7 +52,11 @@ const formatTimeAgo = (updatedAt: string) => {
   return `${diffInYears}년 전`;
 };
 
-const CardMyReview = ({ review, onDeleteSuccess }: CardMyReviewProps) => {
+const CardMyReview = ({
+  review,
+  onDeleteSuccess,
+  onUpdateSuccess,
+}: CardMyReviewProps) => {
   return (
     <div className="flex flex-col w-full max-w-[800px] p-4 border rounded-lg shadow bg-white space-y-4">
       {/* 1. 평점 + 작성 시간 */}
@@ -67,6 +72,7 @@ const CardMyReview = ({ review, onDeleteSuccess }: CardMyReviewProps) => {
           wineId={review.wine?.id}
           userId={review.user.id}
           onDeleteSuccess={onDeleteSuccess}
+          onUpdateSuccess={onUpdateSuccess}
           editType="editReview"
         />
       </div>

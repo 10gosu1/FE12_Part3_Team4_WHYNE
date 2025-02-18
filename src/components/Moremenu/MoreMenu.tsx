@@ -15,6 +15,7 @@ interface MoreMenuProps {
   wineData?: WineData; // ✅ wineData에서 wineId 가져옴
   editType: "editReview" | "editWine"; // ✅ 수정 유형
   onDeleteSuccess?: () => void;
+  onUpdateSuccess?: () => void;
 }
 
 const MoreMenu: React.FC<MoreMenuProps> = ({
@@ -23,6 +24,7 @@ const MoreMenu: React.FC<MoreMenuProps> = ({
   wineData, // ✅ wineData에서 wineId 추출
   editType,
   onDeleteSuccess,
+  onUpdateSuccess,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -129,6 +131,7 @@ const MoreMenu: React.FC<MoreMenuProps> = ({
           onClose={() => setIsEditModalOpen(false)}
           wineId={wineId}
           initialReviewId={reviewId} // 기존 리뷰 ID 전달 → 수정 모드로 동작
+          onSuccess={onUpdateSuccess}
         />
       )}
 

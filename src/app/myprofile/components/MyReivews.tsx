@@ -67,6 +67,16 @@ export default function MyReviews() {
     }
   }, [cursor, hasMore, loading]); // 의존성 배열 추가
 
+  /** ✅ 리뷰 목록을 새로고침 (삭제/수정 후) */
+  const refreshReviews = async () => {
+    try {
+      const response = await fetchMyReviews(10, null); // 첫 페이지부터 다시 불러오기
+      setReviews(response.list); // 최신 리뷰 목록으로 업데이트
+    } catch (error) {
+      console.error("❌ 리뷰 업데이트 실패:", error);
+    }
+  };
+
   // 최초 1회 데이터 로드
   useEffect(() => {
     if (!didFetch.current) {
@@ -88,13 +98,6 @@ export default function MyReviews() {
     observer.observe(observerRef.current);
     return () => observer.disconnect();
   }, [loading, hasMore, loadMoreReviews]); // 의존성 배열에 loadMoreReviews 추가
-
-  /* 삭제 성공 후 UI 업데이트 */
-  const handleDeleteSuccess = (deletedReviewId: number) => {
-    setReviews((prevReviews) =>
-      prevReviews.filter((review) => review.id !== deletedReviewId)
-    );
-  };
 
   return (
     <div className="flex flex-col gap-4 items-center">
@@ -123,7 +126,8 @@ export default function MyReviews() {
               image: review.wine?.image || "",
             },
           }}
-          onDeleteSuccess={() => handleDeleteSuccess(review.id)}
+          onDeleteSuccess={refreshReviews} // ✅ 삭제 후 리스트 갱신
+          onUpdateSuccess={refreshReviews} // ✅ 수정 후 리스트 갱신
         />
       ))}
 
