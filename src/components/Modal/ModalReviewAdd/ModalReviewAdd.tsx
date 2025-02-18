@@ -10,7 +10,7 @@ type ModalReviewAddProps = {
   onClose: () => void;
   initialReviewId?: number;
   wineId?: number;
-  onSuccess?: (newReviewId: number) => void;
+  onSuccess: (newReviewId: number) => void;
 };
 
 export default function ModalReviewAdd({

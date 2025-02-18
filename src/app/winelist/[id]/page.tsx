@@ -33,11 +33,12 @@ export default function Page() {
     } catch (error) {
       console.error("리뷰 id 가져오기 실패:", error);
     }
-  }, [wineId]); // wineId가 변경될 때만 함수가 다시 생성됨 (usecallback으로 감싸기)
+  }, [wineId, reviewsId]);
 
-  const handleSuccess = (newReviewId: number) => {
+  const handleSuccess = async (newReviewId: number) => {
     console.log("새로운 리뷰 ID:", newReviewId);
-    setReviewsId((prevReviewId) => [newReviewId, ...prevReviewId]);
+    // 기존 리뷰 ID 업데이트(옵션) 또는 서버에서 전체 리뷰 목록 다시 가져오기
+    await fetchReviewsId();
   };
 
   useEffect(() => {
