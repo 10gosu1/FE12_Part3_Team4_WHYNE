@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { fetchWineById, updateWine } from "@/lib/api/wine";
 import ModalWineAdd from "@/components/Modal/ModalWineAdd/ModalWineAdd";
 import { AxiosError } from "axios";
+import { showToast } from "@/components/Toast/Toast";
 
 // 와인 데이터 타입 정의
 type WineData = {
@@ -61,8 +62,10 @@ export default function WineEditPage() {
     console.log("🔍 수정 요청 데이터:", wineData); // id를 제외한 데이터
 
     try {
-      await updateWine(wineId, wineData); // id를 제외한 데이터만 전달
-      alert("👌🏻 와인 정보가 수정되었습니다.");
+
+      await updateWine(wineId.toString(), wineData); // id를 제외한 데이터만 전달
+      showToast("와인 정보가 수정되었습니다.", "success");
+      // alert("👌🏻 와인 정보가 수정되었습니다.");
       router.push(`/`); // 수정 후 페이지 이동
     } catch (error) {
       if (error instanceof AxiosError) {

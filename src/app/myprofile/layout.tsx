@@ -1,4 +1,5 @@
 import Gnb from "@/components/Gnb";
+import { Toaster } from "sonner";
 
 export default function MyProfileLayout({
   children,
@@ -11,6 +12,7 @@ export default function MyProfileLayout({
       <section className="flex flex-col lg:flex-row justify-stretch gap-[30px] md:gap-[40px] lg:gap-[5%]">
         {children}
       </section>
+      <Toaster />
     </main>
   );
 }

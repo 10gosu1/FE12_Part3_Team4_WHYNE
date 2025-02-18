@@ -19,8 +19,8 @@ export const showToast = (message: string, type: ToastType = "info") => {
   sonnerToast.custom(() => (
     <div
       className={clsx(
-        "flex items-center gap-3 p-4 rounded-lg shadow-lg max-w-lg",
-        "text-white text-lg font-medium",
+        "flex items-center gap-3 p-3 rounded-lg shadow-lg max-w-lg",
+        "text-white text-md font-medium",
         {
           "bg-green-500": type === "success",
           "bg-red-500": type === "error",

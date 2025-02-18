@@ -7,6 +7,7 @@ import { uploadImage } from "@/lib/api/image";
 //import { useRouter } from "next/navigation";
 import { WineData } from "@/lib/api/wine";
 
+
 type ModalWineFormProps = {
   initialData?: WineData; // 중복 타입 선언 제거
   onSubmit: (data: WineData) => Promise<void>; // 중복 타입 선언 제거
@@ -31,6 +32,7 @@ export default function ModalWineAddForm({
   const [formData, setFormData] = useState(initialData);
   const [file, setFile] = useState<File | null>(null);
   //const router = useRouter();
+
 
   useEffect(() => {
     if (isEditMode && initialData.image) {
