@@ -64,10 +64,9 @@ const CardMyReview = ({ review, onDeleteSuccess }: CardMyReviewProps) => {
         </div>
         <MoreMenu
           reviewId={review.id}
-          wineId={review.wine?.id}
+          wineId={review.wine.id}
           userId={review.user.id}
           onDeleteSuccess={onDeleteSuccess}
-          editType="editReview"
         />
       </div>
 
