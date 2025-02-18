@@ -76,6 +76,7 @@ export default function Dropdown({
     "absolute p-[6px] mt-[6px] border border-[#CFDBEA] rounded-[16px] bg-white z-50 flex flex-col items-center text-md-14px-medium md:text-lg-16px-medium";
 
   const dropdownWidth = width ? width : "w-full";
+  const dropdownPositionClass = dropdownPosition || "right-0 top-full";
 
   // ✅ 항목 필터링: 링크형은 href가 있는 항목, 선택형은 value가 있는 항목
   const linkItems = items.filter((item) => item.href);
@@ -93,7 +94,7 @@ export default function Dropdown({
         <div
           className={clsx(
             dropdownMenuStyles,
-            dropdownPosition,
+            dropdownPositionClass,
             dropdownWidth,
             dropdownStyle
           )}

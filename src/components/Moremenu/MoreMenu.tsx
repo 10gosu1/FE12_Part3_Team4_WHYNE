@@ -103,6 +103,7 @@ const MoreMenu: React.FC<MoreMenuProps> = ({
         onClose={() => setIsDropdownOpen(false)}
         isLinkDropdown={false}
         width="w-[126px]"
+        dropdownPosition="right-0 top-full mt-2"
         items={[
           { label: "수정하기", value: "edit" },
           { label: "삭제하기", value: "delete" },
