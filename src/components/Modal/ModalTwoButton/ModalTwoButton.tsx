@@ -16,8 +16,6 @@ const ModalTwoButton: React.FC<ModalTwoButtonProps> = ({
   setIsOpen,
   onConfirm, //  삭제 기능을 부모에서 받아옴
 }) => {
-  if (!isOpen) return null;
-
   useEffect(() => {
     // ✅ 모달이 열릴 때 body 스크롤 방지
     document.body.style.overflow = "hidden";
@@ -26,6 +24,7 @@ const ModalTwoButton: React.FC<ModalTwoButtonProps> = ({
     };
   }, [isOpen]);
 
+  if (!isOpen) return null;
   const sizeStyles = {
     md: "w-[353px] h-[182px] p-[32px_16px_24px_16px] flex flex-col justify-between border border-[#CFDBEA] rounded-[16px]",
     sm: "w-[353px] h-[172px] p-[32px_16px_24px_16px] flex flex-col justify-between border border-[#CFDBEA] rounded-[16px]",
