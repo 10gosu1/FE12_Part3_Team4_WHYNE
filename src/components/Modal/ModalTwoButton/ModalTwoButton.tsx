@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Button from "@/components/Button/button";
 import clsx from "clsx";
+import { showToast } from "@/components/Toast/Toast";
 
 interface ModalTwoButtonProps {
   size: "md" | "sm";
@@ -76,6 +77,7 @@ const ModalTwoButton: React.FC<ModalTwoButtonProps> = ({
               onClick={() => {
                 onConfirm();
                 setIsOpen(false);
+                showToast("삭제가 완료되었습니다.", "success");
               }}
             >
               삭제하기

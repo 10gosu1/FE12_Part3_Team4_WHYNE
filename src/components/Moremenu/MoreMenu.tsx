@@ -6,6 +6,7 @@ import ModalReviewAdd from "@/components/Modal/ModalReviewAdd/ModalReviewAdd";
 import ModalWineAdd from "@/components/Modal/ModalWineAdd/ModalWineAdd";
 import { deleteReview } from "@/lib/api/review";
 import { deleteWine, updateWine, WineData } from "@/lib/api/wine"; // ✅ WineData import
+import { showToast } from "@/components/Toast/Toast";
 
 interface MoreMenuProps {
   reviewId?: number; // 리뷰 ID (리뷰 수정 전용)
@@ -67,23 +68,19 @@ const MoreMenu: React.FC<MoreMenuProps> = ({
 
   const handleWineUpdate = async (updatedWine: WineData) => {
     try {
-      console.log("🚀 수정 요청 데이터(전송 전):", updatedWine);
-
       if (!updatedWine.id) {
         console.error("❌ 와인 ID가 없습니다. 업데이트를 진행할 수 없습니다.");
         return;
       }
-
       // API 요청 본문에서 `id` 필드 제거
       const { id, ...wineDataWithoutId } = updatedWine;
-
       await updateWine(id, wineDataWithoutId); // ✅ id는 URL에 포함하고, 본문에서는 제거
-      alert("✅ 와인 정보가 수정되었습니다.");
 
       setIsEditModalOpen(false);
       if (onDeleteSuccess) {
         onDeleteSuccess(); // ✅ `fetchMyWines()` 실행
       }
+      showToast("와인 정보가 수정되었습니다.", "success");
     } catch (error) {
       console.error("❌ 와인 수정 실패:", error);
     }
