@@ -13,32 +13,28 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [reviewsId, setReviewsId] = useState<number[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { user, isLoading } = useAuth(); // 현재 로그인된 사용자 정보 가져오기
   const router = useRouter();
   const { id } = useParams();
 
-  // id 값이 배열일 경우 첫 번째 요소를 가져옴
+  // 상세페이지 wineId
   const wineId: number = Array.isArray(id)
     ? parseInt(id[0] ?? "", 10)
     : parseInt(id ?? "", 10) || 0;
 
-  // 리뷰 id 가져오기
-  const fetchReviewsId = useCallback(async () => {
-    try {
-      const data = await fetchWineById(wineId);
-      if (data.reviews) {
-        setReviewsId(data.reviews.map((review: { id: number }) => review.id));
-      }
-    } catch (error) {
-      console.error("리뷰 id 가져오기 실패:", error);
-    }
-  }, [wineId, reviewsId]);
+  console.log("와인아이디", wineId);
+  console.log("리뷰아이디들", reviewsId);
 
-  const handleSuccess = async (newReviewId: number) => {
-    console.log("새로운 리뷰 ID:", newReviewId);
-    // 기존 리뷰 ID 업데이트(옵션) 또는 서버에서 전체 리뷰 목록 다시 가져오기
-    await fetchReviewsId();
+  // 와인의 리뷰ID들을 reviewsId에 저장.
+  const fetchWineReviews = async () => {
+    try {
+      const wineData = await fetchWineById(wineId);
+      setReviewsId(wineData.reviews.map((review: { id: number }) => review.id)); // api요청으로 가져온 리뷰아이디들을 상태값으로 변경.
+    } catch (error) {
+      console.error("페이지 리뷰를 가져오는데 실패했습니다", error);
+      return [];
+    }
   };
 
   useEffect(() => {
@@ -49,9 +45,8 @@ export default function Page() {
   }, [user, isLoading, router]);
 
   useEffect(() => {
-    if (!wineId) return;
-    fetchReviewsId();
-  }, [wineId, fetchReviewsId]); //의존성관리를 위한 fetchreviewsid 추가
+    fetchWineReviews();
+  }, []); // wineId가 변경될 때만 실행
 
   if (isLoading) {
     return <p>로딩 중...</p>; // 로그인 상태 확인 중일 때 로딩 UI
@@ -97,7 +92,12 @@ export default function Page() {
             <ModalReviewAdd
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
-              onSuccess={handleSuccess}
+              onSuccess={(newReviewId) => {
+                setReviewsId((prevReviewsId) => [
+                  newReviewId,
+                  ...prevReviewsId,
+                ]);
+              }}
             />
           </div>
         </div>

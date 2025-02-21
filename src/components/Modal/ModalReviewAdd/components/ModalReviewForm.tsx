@@ -209,7 +209,8 @@ export default function ModalReviewForm({
       }
       onClose();
       if (onSuccess) {
-        onSuccess(response.id);
+        onSuccess(response.id); // 📌 새 리뷰 ID를 ModalReviewAdd로 전달!
+        window.location.reload();
       }
     } catch (error) {
       console.error("리뷰 등록 실패:", error);

@@ -48,6 +48,7 @@ export default function ReviewList({ reviewsId }: ReviewListProps) {
       fetchReviews();
     }
   }, [reviewsId]);
+
   return (
     <div className="flex flex-col gap-[22px]">
       <p className="text-[20px] font-bold">리뷰 목록</p>
