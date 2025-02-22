@@ -47,7 +47,7 @@ export default function MyList({ wine, onDeleteSuccess }: MyListProps) {
         </p>
         <p
           style={{ backgroundColor: "#F1EDFC", color: "#6A42DB" }}
-          className="inline-flex items-center justify-center px-3 sm:px-4 py-1 rounded-[12px] text-[16px] sm:text-[18px] font-bold"
+          className="inline-flex items-center justify-center w-[120px] sm:w-[140px] md:w-[160px] px-3 sm:px-4 py-1 rounded-[12px] text-[16px] sm:text-[18px] font-bold text-right"
         >
           {`₩ ${wine.price.toLocaleString("ko-KR")}`}
         </p>
