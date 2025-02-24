@@ -125,7 +125,7 @@ export default function WineList() {
       // ✅ API 요청 데이터 확인 (id, avgRating 없는지 체크)
       console.log("📤 API 요청 데이터:", wineData);
       const createdWine = await createWine(validWineData);
-      showToast("🍷 새로운 와인이 등록되었습니다.");
+      showToast("새로운 와인이 등록되었습니다.", "success");
       setWines((prevWines) => [
         {
           ...createdWine,
