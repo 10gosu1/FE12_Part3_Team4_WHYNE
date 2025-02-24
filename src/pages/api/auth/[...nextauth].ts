@@ -10,6 +10,11 @@ interface CustomUser extends NextAuthUser {
   refreshToken?: string;
 }
 
+interface CustomSession extends Session {
+  user: CustomUser; // user 타입을 CustomUser로 확장
+}
+
+
 export const authOptions: NextAuthOptions = {
   debug: true, // 디버깅 활성화
   providers: [
@@ -56,13 +61,13 @@ export const authOptions: NextAuthOptions = {
     }),
 
     KakaoProvider({
-      clientId: process.env.KAKAO_CLIENT_ID!,
-      clientSecret: process.env.KAKAO_CLIENT_SECRET!,
+      clientId: process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID!,
+      clientSecret: "",
     }),
   ],
 
   callbacks: {
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({ session, token }: { session: CustomSession; token: JWT }) {
       console.log("세션 시작 - session:", session);
       console.log("세션 시작 - token:", token);
 
@@ -72,6 +77,8 @@ export const authOptions: NextAuthOptions = {
           email: token.email as string,
           name: token.name as string,
           image: token.picture as string | undefined,
+          accessToken: token.accessToken as string, // AccessToken을 session에 추가
+        refreshToken: token.refreshToken as string, 
         };
       }
       
