@@ -72,6 +72,7 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     await signOut({ callbackUrl: "/" }); // NextAuth 로그아웃 처리
+    router.push("/");
   };
 
   return (

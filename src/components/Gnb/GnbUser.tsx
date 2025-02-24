@@ -23,6 +23,10 @@ export default function GnbUser() {
     );
   }
 
+  const handleLogout = async () => {
+    await logout(); // 로그아웃 처리
+  };
+
   return (
     <div className="flex gap-[20px] md:gap-[40px] relative">
       {!user ? (
@@ -52,7 +56,7 @@ export default function GnbUser() {
             }
             items={[
               { label: "마이페이지", href: "/myprofile" },
-              { label: "로그아웃", href: "/", onClick: logout },
+              { label: "로그아웃", href: "#", onClick: handleLogout }, // 이벤트 객체 제거
             ]}
             isOpen={isDropdownOpen}
             onToggle={() => setIsDropdownOpen((prev) => !prev)}
