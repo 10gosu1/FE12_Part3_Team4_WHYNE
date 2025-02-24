@@ -56,7 +56,7 @@ export default function GnbUser() {
             }
             items={[
               { label: "마이페이지", href: "/myprofile" },
-              { label: "로그아웃", href: "#", onClick: handleLogout }, // 이벤트 객체 제거
+              { label: "로그아웃", href: "#", onClick: handleLogout },
             ]}
             isOpen={isDropdownOpen}
             onToggle={() => setIsDropdownOpen((prev) => !prev)}

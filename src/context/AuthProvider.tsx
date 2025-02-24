@@ -9,35 +9,21 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
-import { useRouter } from "next/navigation";
 import { signOut, useSession, SessionProvider } from "next-auth/react";
 
-/**
- * UserProps
- * @typedef {Object} UserProps
- * @property {string} email - 로그인한 사용자의 이메일
- * @property {string} nickname - 사용자의 닉네임
- * @property {string | null} image - 사용자의 프로필 이미지, 없을 경우 null
- */
+// 1. UserProps 타입 정의
 interface UserProps {
   email: string;
   nickname: string;
   image: string | null;
 }
 
-/**
- * UserContextProps
- * @typedef {Object} UserContextProps
- * @property {boolean} isLoading - 사용자 정보 로딩 상태
- * @property {UserProps | undefined} user - 로그인된 사용자 정보
- * @property {Dispatch<SetStateAction<UserProps | undefined>>} setUser - 사용자 정보를 설정하는 함수
- * @property {() => void} logout - 로그아웃을 처리하는 함수
- */
+// 2. UserContextProps 타입 정의
 interface UserContextProps {
   isLoading: boolean;
-  user?: UserProps;
+  user: UserProps | undefined;
   setUser: Dispatch<SetStateAction<UserProps | undefined>>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 // UserContext 생성
@@ -54,7 +40,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 function AuthContextProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession(); // NextAuth의 세션 정보 가져오기
   const [user, setUser] = useState<UserProps>(); // 유저 상태 저장
-  const router = useRouter();
 
   useEffect(() => {
     if (status === "loading") return; // 로딩 중이면 아무것도 안 함
@@ -70,9 +55,9 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
     }
   }, [session, status]);
 
+  // 로그아웃 처리
   const logout = async () => {
-    await signOut({ callbackUrl: "/" }); // NextAuth 로그아웃 처리
-    router.push("/");
+    await signOut({ callbackUrl: "/" }); // 리다이렉트할 URL
   };
 
   return (
