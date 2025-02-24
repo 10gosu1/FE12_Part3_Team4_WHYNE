@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "@/context/AuthProvider";
+import { useSession, signOut } from "next-auth/react";  // useSession과 signOut을 사용
 import Link from "next/link";
 import Image from "next/image";
 import Dropdown from "../Dropdown";
 import Skeleton from "./Skeleton";
 
 export default function GnbUser() {
-  const { user, isLoading, logout } = useAuth();
+  const { data: session, status } = useSession();  // useSession 사용
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
-  if (isLoading) {
+  if (status === "loading") {
     return (
       <div className="flex gap-[20px] md:gap-[40px] relative">
         <Skeleton
@@ -24,12 +24,12 @@ export default function GnbUser() {
   }
 
   const handleLogout = async () => {
-    await logout(); // 로그아웃 처리
+    await signOut({ callbackUrl: "/" });  // 로그아웃 처리
   };
 
   return (
     <div className="flex gap-[20px] md:gap-[40px] relative">
-      {!user ? (
+      {!session ? (
         <>
           <Link href="/signin" className="hover:text-purple-100 transition">
             로그인
@@ -47,7 +47,7 @@ export default function GnbUser() {
                   <Image
                     style={{ objectFit: "cover" }}
                     fill
-                    src={user.image || "/images/common/no_profile.svg"}
+                    src={session.user?.image || "/images/common/no_profile.svg"}
                     className="!relative"
                     alt="프로필 이미지"
                   />

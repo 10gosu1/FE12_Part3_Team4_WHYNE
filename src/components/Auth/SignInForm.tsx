@@ -7,12 +7,21 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { signIn } from "next-auth/react"; // ✅ NextAuth의 signIn 사용
+import { signIn, SignInResponse } from "next-auth/react"; // ✅ NextAuth의 signIn 사용
 import { useSession } from "next-auth/react"; // ✅ 세션 정보 가져오기
 import { signInSchema, SignInSchema } from "@/app/schemas/auth";
 import Button from "@/components/Button/button";
 import { Input, InputPassword, Label } from "@/components/Input";
 import Icon from "@/components/Icon/Icon";
+
+// SignInResponse 타입에 user 추가
+interface SignInResponseWithUser extends SignInResponse {
+  user: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}
+
 
 export default function SignInForm() {
   const {
@@ -29,13 +38,8 @@ export default function SignInForm() {
 
   const [validity, setValidity] = useState({ email: false, password: false });
   const router = useRouter();
-  const { data: session, status } = useSession(); // ✅ 현재 로그인된 세션 정보 가져오기
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/"); // 로그인 상태라면 홈으로 이동
-    }
-  }, [status, router]);
+
 
   const handleValidate = async (field: "email" | "password") => {
     const isValid = await trigger(field);
@@ -51,15 +55,21 @@ export default function SignInForm() {
       redirect: false, // ✅ 직접 리다이렉트하지 않도록 설정
       email: data.email,
       password: data.password,
-    });
+    }) as SignInResponseWithUser;
     console.log("로그인 응답 결과:", result); // 응답 확인용 로그 추가
 
     if (result?.error) {
       console.error("로그인 실패:", result.error);
       setError("email", { type: "manual", message: "👀 이메일 혹은 비밀번호를 확인해주세요." });
     } else {
-      // 로그인 성공 시 홈으로 리다이렉트
-      router.push("/");
+      const user = result?.user;
+      if (user) {
+        // user가 존재하면 세션스토리지에 토큰을 저장
+        sessionStorage.setItem("accessToken", user.accessToken); 
+        sessionStorage.setItem("refreshToken", user.refreshToken);
+        console.log("토큰 저장 완료");
+        router.push("/"); // 로그인 후 홈 페이지로 리디렉션
+      }
     }
   };
 

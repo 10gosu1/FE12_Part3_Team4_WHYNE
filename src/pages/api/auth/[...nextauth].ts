@@ -2,18 +2,19 @@ import NextAuth, { NextAuthOptions, Session, User as NextAuthUser } from "next-a
 import CredentialsProvider from "next-auth/providers/credentials";
 import KakaoProvider from "next-auth/providers/kakao";
 import { logIn } from "@/lib/api/newAuth"; // 외부 API 호출 함수
+import { socialSignIn } from "@/lib/api/newAuth"; // 카카오 로그인 API 호출 함수
 import { JWT } from "next-auth/jwt";
 
 // User 타입 확장
 interface CustomUser extends NextAuthUser {
   accessToken?: string;
   refreshToken?: string;
+  nickname?: string; // nickname을 추가
 }
 
 interface CustomSession extends Session {
   user: CustomUser; // user 타입을 CustomUser로 확장
 }
-
 
 export const authOptions: NextAuthOptions = {
   debug: true, // 디버깅 활성화
@@ -44,10 +45,11 @@ export const authOptions: NextAuthOptions = {
             return {
               id: String(user.id),
               email: user.email,
-              name: user.nickname,
+              name: user.nickname, // nickname을 name에 할당
               image: user.image || undefined,
               accessToken,
               refreshToken,
+              nickname: user.nickname, // nickname을 직접 반환
             } as CustomUser;
           } else {
             console.error("유저 정보가 없습니다.");
@@ -78,12 +80,12 @@ export const authOptions: NextAuthOptions = {
           name: token.name as string,
           image: token.picture as string | undefined,
           accessToken: token.accessToken as string, // AccessToken을 session에 추가
-        refreshToken: token.refreshToken as string, 
+          refreshToken: token.refreshToken as string, // refreshToken도 추가
+          nickname: token.nickname as string, // nickname을 세션에 추가
         };
       }
-      
+
       console.log("세션 업데이트 후 - session:", session);
-      
       return session;
     },
 
@@ -98,12 +100,14 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.name = user.name;
         token.picture = user.image;
+        token.nickname = user.nickname; // nickname을 JWT에 추가
       }
 
       console.log("JWT 생성 후 - token:", token);
-      
       return token;
     },
+    
+    
   },
 
   pages: {

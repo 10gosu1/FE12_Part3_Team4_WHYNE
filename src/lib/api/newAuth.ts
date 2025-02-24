@@ -1,5 +1,5 @@
 import { signIn } from "next-auth/react"; // NextAuth의 signIn 사용
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import apiClient from "./newApi";
 
 // ✅ 회원가입
@@ -65,6 +65,8 @@ export const logIn = async (email: string, password: string) => {
       sessionStorage.setItem("user_id", String(user.id));
 
       console.log("✅ 로그인 완료 - user_id 저장:", user.id);
+      console.log("✅ 로그인 완료 - 저장된 refreshToken:", sessionStorage.getItem("refreshToken"));
+
     }
     return response.data;
   } catch (error) {
@@ -73,50 +75,77 @@ export const logIn = async (email: string, password: string) => {
   }
 };
 
-
-
 // ✅ 액세스 토큰 갱신
 export const refreshAccessToken = async () => {
   try {
     if (typeof window === "undefined") throw new Error("브라우저 환경이 아닙니다.");
 
     const refreshToken = sessionStorage.getItem("refreshToken");
-    if (!refreshToken) throw new Error("리프레시 토큰이 없습니다.");
+    
+    if (!refreshToken) {
+      console.error("❌ 리프레시 토큰 없음. 로그아웃 처리");
+      window.location.href = "/signin"; // 로그인 페이지로 이동
+      return;
+    }
 
-    const response = await apiClient.post("/auth/refresh-token", {
-      refreshToken,
-    });
+    console.log("🔹 [refreshAccessToken] 사용되는 리프레시 토큰:", refreshToken);
+
+    // 기존 accessToken 삭제 (오염된 토큰 방지)
+    sessionStorage.removeItem("accessToken");
+
+    console.log("🔹 [refreshAccessToken] API 요청 시작 - /auth/refresh-token");
+
+    const response = await apiClient.post("/auth/refresh-token", { refreshToken });
+
+    console.log("✅ [refreshAccessToken] 토큰 갱신 응답:", response.data);
+
+    if (!response.data || !response.data.accessToken) {
+      console.error("❌ [refreshAccessToken] 응답 데이터 오류:", response.data);
+      throw new Error("토큰 갱신 실패");
+    }
 
     const { accessToken } = response.data;
 
     sessionStorage.setItem("accessToken", accessToken);
 
-    console.log("토큰 갱신 성공! 새로운 액세스 토큰:", accessToken);
+    console.log("✅ [refreshAccessToken] 새 액세스 토큰 저장 완료:", accessToken);
     return accessToken;
   } catch (error) {
-    console.error("토큰 갱신 실패:", error);
+    console.error("❌ [refreshAccessToken] 토큰 갱신 실패:", error);
+
+    // 리프레시 토큰이 만료되었거나 문제가 생기면 로그아웃 처리
+    window.location.href = "/signin";
+
     throw error;
   }
 };
+
 
 // ✅ 카카오 소셜 로그인
 export const socialSignIn = async (code: string) => {
   try {
     const redirectUri = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI!;
+    console.log("카카오 로그인 요청 - 코드:", code);
+
 
     const response = await apiClient.post(`/auth/signIn/KAKAO`, {
       redirectUri,
       token: code,
     });
+    console.log("카카오 로그인 응답: ", response.data);  // 응답 데이터 확인
 
-    const { accessToken, refreshToken } = response.data;
+    const { accessToken, refreshToken, user } = response.data;
 
     if (typeof window !== "undefined") {
       sessionStorage.setItem("accessToken", accessToken);
       sessionStorage.setItem("refreshToken", refreshToken);
     }
 
-    return response.data;
+    return {
+      accessToken,
+      refreshToken,
+      user, // 사용자 정보 포함
+    };
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.error("토큰 갱신 실패:", error.response?.data || error.message);

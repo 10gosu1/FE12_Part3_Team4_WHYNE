@@ -8,14 +8,12 @@ interface ProfileSettingProps {
   nickname: string;
   email: string;
   image: string;
-  setUser: (user: { nickname: string; email: string; image: string }) => void;
 }
 
 const ProfileSetting: React.FC<ProfileSettingProps> = ({
   nickname,
   email,
   image,
-  setUser,
 }) => {
   const [newNickname, setNewNickname] = useState<string>(nickname);
   const [newImage, setNewImage] = useState<string>(image);
@@ -41,16 +39,12 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
     setIsUpdating(true);
     try {
       const updatedUser = await updateUserProfile(newNickname, newImage);
-      setUser(updatedUser);
       showToast("프로필이 성공적으로 업데이트되었습니다!", "success");
-
-      //alert("프로필이 성공적으로 업데이트되었습니다!");
+      // 여기서는 상태 업데이트가 필요 없으므로 setUser를 제거
     } catch (error) {
       if (error instanceof Error) {
         console.error("❌ 프로필 업데이트 실패:", error);
         showToast("프로필 업데이트 중 오류가 발생했습니다.", "error");
-
-        //alert("프로필 업데이트 중 오류가 발생했습니다.");
       }
     } finally {
       setIsUpdating(false); // 로딩 상태 해제

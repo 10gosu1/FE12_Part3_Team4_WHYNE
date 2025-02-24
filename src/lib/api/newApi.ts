@@ -29,30 +29,30 @@ apiClient.interceptors.request.use(
 
 // ✅ 응답 인터셉터로 401 에러 처리 및 토큰 갱신
 apiClient.interceptors.response.use(
-  (response) => response, // 정상 응답은 그대로 반환
+  (response) => response,
   async (error) => {
-    if (error.response && error.response.status === 401) {
-      // 401 에러가 발생하면 토큰 갱신 시도
-      try {
-        const newAccessToken = await refreshAccessToken(); // refresh token으로 access token 갱신
-        error.config.headers["Authorization"] = `Bearer ${newAccessToken}`; // 갱신된 토큰을 다시 헤더에 설정
-        return apiClient(error.config); // 갱신된 토큰으로 원래 요청 재시도
-      } catch (refreshError) {
-        // ✅ 타입 좁히기: axios.isAxiosError 확인
-        if (axios.isAxiosError(refreshError)) {
-          console.error("토큰 갱신 실패", refreshError);
+    if (error.response?.status === 401) {
+      console.warn("⚠️ 401 오류 발생 - 토큰 갱신 시도");
 
-          // 토큰 갱신 실패 시 로그인 페이지로 리디렉션
-          if (refreshError.response?.status === 401) {
-            window.location.href = "/signin"; // 로그인 페이지로 리디렉션
-          }
-        } else {
-          console.error("알 수 없는 에러 발생", refreshError);
+      try {
+        const newAccessToken = await refreshAccessToken();
+
+        if (!newAccessToken) {
+          console.error("❌ 토큰 갱신 실패 - 로그인 페이지로 이동");
+          window.location.href = "/signin";
+          return Promise.reject(error);
         }
-        return Promise.reject(refreshError); // 갱신 실패 시 에러 처리
+
+        // 원래 요청에 새 토큰 적용 후 재시도
+        error.config.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        return apiClient(error.config);
+      } catch (refreshError) {
+        console.error("❌ 토큰 갱신 중 오류:", refreshError);
+        window.location.href = "/signin";
+        return Promise.reject(refreshError);
       }
     }
-    return Promise.reject(error); // 그 외의 에러는 그대로 처리
+    return Promise.reject(error);
   }
 );
 
