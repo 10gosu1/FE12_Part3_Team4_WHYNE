@@ -2,7 +2,6 @@ import NextAuth, { NextAuthOptions, Session, User as NextAuthUser } from "next-a
 import CredentialsProvider from "next-auth/providers/credentials";
 import KakaoProvider from "next-auth/providers/kakao";
 import { logIn } from "@/lib/api/newAuth"; // 외부 API 호출 함수
-import { socialSignIn } from "@/lib/api/newAuth"; // 카카오 로그인 API 호출 함수
 import { JWT } from "next-auth/jwt";
 
 // User 타입 확장

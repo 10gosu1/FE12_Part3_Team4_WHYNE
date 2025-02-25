@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from "@/components/Button/button";
 import { Input, InputProfileImage } from "@/components/Input";
-import { updateUserProfile } from "@/lib/api/user";
+//import { updateUserProfile } from "@/lib/api/user";
 import { showToast } from "@/components/Toast/Toast";
 
 interface ProfileSettingProps {
@@ -38,7 +38,7 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
 
     setIsUpdating(true);
     try {
-      const updatedUser = await updateUserProfile(newNickname, newImage);
+      //const updatedUser = await updateUserProfile(newNickname, newImage);
       showToast("프로필이 성공적으로 업데이트되었습니다!", "success");
       // 여기서는 상태 업데이트가 필요 없으므로 setUser를 제거
     } catch (error) {

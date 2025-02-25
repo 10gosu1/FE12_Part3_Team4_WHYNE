@@ -1,5 +1,5 @@
 import { signIn } from "next-auth/react"; // NextAuth의 signIn 사용
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import apiClient from "./newApi";
 
 // ✅ 회원가입

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { signIn, SignInResponse } from "next-auth/react"; // ✅ NextAuth의 signIn 사용
-import { useSession } from "next-auth/react"; // ✅ 세션 정보 가져오기
 import { signInSchema, SignInSchema } from "@/app/schemas/auth";
 import Button from "@/components/Button/button";
 import { Input, InputPassword, Label } from "@/components/Input";
