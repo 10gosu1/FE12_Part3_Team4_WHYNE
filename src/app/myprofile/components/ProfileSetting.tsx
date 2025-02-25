@@ -1,19 +1,22 @@
+"use client"
+
 import { useState, useEffect } from "react";
 import Button from "@/components/Button/button";
 import { Input, InputProfileImage } from "@/components/Input";
-//import { updateUserProfile } from "@/lib/api/user";
 import { showToast } from "@/components/Toast/Toast";
 
 interface ProfileSettingProps {
   nickname: string;
   email: string;
   image: string;
+  setUser: (user: { nickname: string; email: string; image: string }) => void;
 }
 
 const ProfileSetting: React.FC<ProfileSettingProps> = ({
   nickname,
   email,
   image,
+  setUser,
 }) => {
   const [newNickname, setNewNickname] = useState<string>(nickname);
   const [newImage, setNewImage] = useState<string>(image);
@@ -21,9 +24,10 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
 
   // UseEffect를 사용하여 nickname과 image가 변경될 때 상태를 업데이트
   useEffect(() => {
-    setNewNickname(nickname);
-    setNewImage(image);
+    if (newNickname !== nickname) setNewNickname(nickname);
+    if (newImage !== image) setNewImage(image);
   }, [nickname, image]);
+  
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewNickname(e.target.value);
@@ -35,21 +39,24 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
 
   const handleUpdate = async () => {
     console.log("💡 업데이트 요청 데이터:", { newNickname, newImage });
-
     setIsUpdating(true);
+
     try {
-      //const updatedUser = await updateUserProfile(newNickname, newImage);
+      // setUser에 객체 형태로 전달
+      await setUser({
+        nickname: newNickname,
+        email, // 이메일은 변경되지 않으므로 그대로 전달
+        image: newImage,
+      });
       showToast("프로필이 성공적으로 업데이트되었습니다!", "success");
-      // 여기서는 상태 업데이트가 필요 없으므로 setUser를 제거
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("❌ 프로필 업데이트 실패:", error);
-        showToast("프로필 업데이트 중 오류가 발생했습니다.", "error");
-      }
+    } catch (error: any) {
+      console.error("❌ 프로필 업데이트 실패:", error);
+      showToast("프로필 업데이트 중 오류가 발생했습니다.", "error");
     } finally {
-      setIsUpdating(false); // 로딩 상태 해제
+      setIsUpdating(false);
     }
   };
+  
 
   return (
     <>

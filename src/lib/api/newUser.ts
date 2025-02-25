@@ -25,8 +25,10 @@ export const updateUserProfile = async (nickname: string, imageUrl: string) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken"); // 세션에서 토큰 가져오기
     if (!accessToken) {
+      console.error("❌ Access Token이 없습니다.");
       throw new Error("Access Token이 없습니다.");
     }
+    console.log("🛠 accessToken 확인:", accessToken); // ✅ 토큰 확인용 로그 추가
 
     const response = await apiClient.patch(
       "/users/me",
@@ -40,6 +42,8 @@ export const updateUserProfile = async (nickname: string, imageUrl: string) => {
         },
       }
     );
+
+    console.log("✅ 서버 응답 데이터:", response.data); // 응답 데이터 확인
     return response.data;
   } catch (error) {
     console.error("❌ 내 정보 수정 실패:", error);
