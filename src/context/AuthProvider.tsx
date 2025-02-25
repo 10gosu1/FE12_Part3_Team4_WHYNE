@@ -44,7 +44,8 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (status === "loading") return; // 로딩 중이면 아무것도 안 함
-    
+    console.log("Session status:", status); // 세션 상태
+
     console.log("Session data:", session); // 세션 값 확인
 
     if (session?.user) {

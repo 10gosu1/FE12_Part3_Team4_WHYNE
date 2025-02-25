@@ -7,6 +7,7 @@ import ProfileSetting from "./components/ProfileSetting";
 import { useSession } from "next-auth/react";
 import { fetchMyReviews, fetchMyWines, updateUserProfile, fetchUserProfile} from "@/lib/api/newUser";
 import { useRouter } from "next/navigation";
+import { showToast } from "@/components/Toast/Toast";
 
 export default function MyProfile() {
   const [activeTab, setActiveTab] = useState(1);
@@ -33,9 +34,10 @@ export default function MyProfile() {
     try {
       const updatedUser = await updateUserProfile(nickname, image);
       setUser(updatedUser);
-      console.log("프로필이 성공적으로 업데이트되었습니다!", updatedUser);
+      showToast("프로필이 성공적으로 업데이트되었습니다!", "success");
     } catch (error: any) {
       console.error("❌ 프로필 업데이트 실패:", error);
+      showToast("이미지를 업로드해주셔야 업데이트 됩니다.", "error");
     }
   };
 

@@ -2,13 +2,27 @@ import { signIn } from "next-auth/react"; // NextAuth의 signIn 사용
 import { AxiosError } from "axios";
 import apiClient from "./newApi";
 
+// SignUpResponse 타입 정의
+interface SignUpResponse {
+  user: {
+    email: string;
+    nickname: string;
+    image: string | null;
+  };
+}
+
+interface SignInResponse {
+  // signIn 응답에 맞는 필드를 정의하세요
+  ok: boolean;
+  session: any;  // 세션 데이터 타입을 정확히 정의할 수 있습니다.
+}
 // ✅ 회원가입
 export const signUp = async (
   email: string,
   nickname: string,
   password: string,
   passwordConfirmation: string
-) => {
+): Promise<SignUpResponse> => {
   try {
     const response = await apiClient.post(
       "/auth/signUp",
@@ -36,7 +50,13 @@ export const signUp = async (
     });
     console.log("✅ 로그인 성공 후 세션 처리:", loginResponse);
 
-    return loginResponse;
+    if (loginResponse && loginResponse.ok) {
+      console.log("✅ 로그인 성공 후 세션 처리:", loginResponse);
+      // 로그인 성공 후 처리할 내용 추가
+      return response.data; // 성공적으로 회원가입된 사용자 정보 반환
+    } else {
+      throw new Error("로그인 실패");
+    }
   } catch (error) {
     if (error instanceof AxiosError) {
       console.error("❌ 회원가입 실패:", error.response?.data || error);

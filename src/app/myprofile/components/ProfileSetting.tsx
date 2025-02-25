@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Button from "@/components/Button/button";
 import { Input, InputProfileImage } from "@/components/Input";
-import { showToast } from "@/components/Toast/Toast";
 
 interface ProfileSettingProps {
   nickname: string;
@@ -39,6 +38,7 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
 
   const handleUpdate = async () => {
     console.log("💡 업데이트 요청 데이터:", { newNickname, newImage });
+
     setIsUpdating(true);
 
     try {
@@ -48,10 +48,8 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
         email, // 이메일은 변경되지 않으므로 그대로 전달
         image: newImage,
       });
-      showToast("프로필이 성공적으로 업데이트되었습니다!", "success");
     } catch (error: any) {
       console.error("❌ 프로필 업데이트 실패:", error);
-      showToast("프로필 업데이트 중 오류가 발생했습니다.", "error");
     } finally {
       setIsUpdating(false);
     }
