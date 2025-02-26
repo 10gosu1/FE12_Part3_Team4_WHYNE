@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { fetchMyReviews } from "@/lib/api/user";
+import { fetchMyReviews } from "@/lib/api/newUser"; // 🛑 수정함
 import CardMyReview from "@/components/Card/CardMyReview/CardMyReview";
 import Image from "next/image";
 

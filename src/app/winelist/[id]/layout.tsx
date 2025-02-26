@@ -1,11 +1,12 @@
-import { AuthProvider } from "@/context/AuthProvider";
+// 🛑 수정함
+
 import { Toaster } from "sonner";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthProvider>
-      {children}
+    <>
+    {children}
       <Toaster />
-    </AuthProvider>
+    </>
   );
 }

@@ -17,6 +17,7 @@ interface UserProps {
   email: string;
   nickname: string;
   image: string | null;
+  id: string; // 추가된 부분
 }
 
 // 2. UserContextProps 타입 정의
@@ -53,9 +54,13 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
         email: session.user.email!,
         nickname: session.user.name || "닉네임 없음",
         image: session.user.image || null,
+        id: (session as CustomSession).user.id, // 세션에서 id를 가져와 저장
+
       });
       const accessToken = (session as CustomSession).user.accessToken;
       const refreshToken = (session as CustomSession).user.refreshToken;
+      const userId = (session as CustomSession).user.id;
+
 
       if (accessToken) {
         sessionStorage.setItem("accessToken", accessToken);
@@ -63,10 +68,15 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
       if (refreshToken) {
         sessionStorage.setItem("refreshToken", refreshToken);
       }
+      if (userId) {
+        sessionStorage.setItem("userId", userId); // 아이디도 sessionStorage에 저장
+      }
     } else {
       setUser(undefined); // 세션이 없을 경우, 유저 상태를 undefined로 설정
       sessionStorage.removeItem("accessToken"); // 세션에서 토큰 삭제
       sessionStorage.removeItem("refreshToken");
+      sessionStorage.removeItem("userId"); // 아이디도 삭제
+
     }
   }, [session, status]);
 
@@ -75,6 +85,8 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
     await signOut({ callbackUrl: "/" }); // 리다이렉트할 URL
     sessionStorage.removeItem("accessToken"); // 로그아웃 시, sessionStorage에서 accessToken 삭제
     sessionStorage.removeItem("refreshToken"); // 로그아웃 시, sessionStorage에서 refreshToken 삭제
+    sessionStorage.removeItem("userId"); // 로그아웃 시, sessionStorage에서 userId 삭제
+
   };
 
   return (

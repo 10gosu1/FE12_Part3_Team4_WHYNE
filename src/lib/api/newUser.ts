@@ -55,6 +55,7 @@ export const updateUserProfile = async (nickname: string, imageUrl: string) => {
 export const fetchMyReviews = async (limit: number, cursor?: number | null) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken"); // 세션에서 토큰 가져오기
+
     console.log("Access Token:", accessToken); // 콘솔에 출력
 
     if (!accessToken) {
@@ -81,6 +82,8 @@ export const fetchMyReviews = async (limit: number, cursor?: number | null) => {
 export const fetchMyWines = async (limit: number, cursor?: number) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken"); // 세션에서 토큰 가져오기
+    console.log("🟢 API 요청에 사용할 토큰:", accessToken);
+
     if (!accessToken) {
       throw new Error("😢 Access Token이 없습니다.");
     }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchWines, createWine } from "@/lib/api/wine";
+import { fetchWines, createWine } from "@/lib/api/newWine"; // 🛑 수정함
 import { useAuth } from "@/context/AuthProvider";
 import WineCard from "./WineCard";
 import WineTypeSelector from "@/components/filter/WineTypeSelector";

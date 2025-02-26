@@ -1,7 +1,7 @@
 import CardReview from "@/components/Card/CardReview/CardReview";
 import { useEffect, useState } from "react";
 import { fetchReviewById } from "@/lib/api/review";
-import Image from "next/image";
+import Image from "next/image"
 
 interface User {
   id: number;

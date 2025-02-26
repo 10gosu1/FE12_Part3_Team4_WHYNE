@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import MyList from "@/components/Card/Mylist/MyList"; // 개별 와인 카드
-import { fetchMyWines } from "@/lib/api/user"; // API 요청 함수
-import { WineData } from "@/lib/api/wine"; // 기존 WineData 타입 가져오기
+
+import { fetchMyWines } from "@/lib/api/newUser"; // API 요청 함수 🛑 수정한 부분
+import { WineData } from "@/lib/api/newWine"; // 기존 WineData 타입 가져오기 🛑 수정한 부분
 
 // 기존 WineData를 확장하는 새로운 타입 생성 (userId 포함)
 interface WineDataWithUserId extends WineData {

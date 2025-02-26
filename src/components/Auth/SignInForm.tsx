@@ -13,15 +13,19 @@ import Button from "@/components/Button/button";
 import { Input, InputPassword, Label } from "@/components/Input";
 import Icon from "@/components/Icon/Icon";
 
-// SignInResponse 타입에 user 추가
 interface SignInResponseWithUser extends SignInResponse {
   user: {
-    accessToken: string;
-    refreshToken: string;
+    id: number; // id를 추가
+    email: string;
+    nickname: string;
+    teamId: string;
+    updatedAt: string;
+    createdAt: string;
+    image: string | null;
+    accessToken: string; 
+    refreshToken: string; 
   };
 }
-
-
 export default function SignInForm() {
   const {
     register,
@@ -37,8 +41,6 @@ export default function SignInForm() {
 
   const [validity, setValidity] = useState({ email: false, password: false });
   const router = useRouter();
-
-
 
   const handleValidate = async (field: "email" | "password") => {
     const isValid = await trigger(field);
@@ -66,7 +68,11 @@ export default function SignInForm() {
         // user가 존재하면 세션스토리지에 토큰을 저장
         sessionStorage.setItem("accessToken", user.accessToken); 
         sessionStorage.setItem("refreshToken", user.refreshToken);
+        sessionStorage.setItem("userId", user.id.toString()); // user.id를 sessionStorage에 저장
+        
         console.log("토큰 저장 완료");
+        console.log("세션에 저장된 ID:", sessionStorage.getItem("userId"));
+
         router.push("/"); // 로그인 후 홈 페이지로 리디렉션
       }
     }
