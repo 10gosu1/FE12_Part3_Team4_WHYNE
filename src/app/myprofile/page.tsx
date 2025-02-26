@@ -35,9 +35,12 @@ export default function MyProfile() {
       const updatedUser = await updateUserProfile(nickname, image);
       setUser(updatedUser);
       showToast("프로필이 성공적으로 업데이트되었습니다!", "success");
-    } catch (error: any) {
-      console.error("❌ 프로필 업데이트 실패:", error);
-      showToast("이미지를 업로드해주셔야 업데이트 됩니다.", "error");
+    } catch (error:unknown) {
+      if (error instanceof Error) {
+        console.error("❌ 프로필 업데이트 실패:", error);
+        showToast("이미지를 업로드해주셔야 업데이트 됩니다.", "error");
+      }
+      
     }
   };
 

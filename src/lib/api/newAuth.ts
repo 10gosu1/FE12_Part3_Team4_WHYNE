@@ -5,17 +5,14 @@ import apiClient from "./newApi";
 // SignUpResponse 타입 정의
 interface SignUpResponse {
   user: {
+    id: number;
     email: string;
     nickname: string;
     image: string | null;
   };
 }
 
-interface SignInResponse {
-  // signIn 응답에 맞는 필드를 정의하세요
-  ok: boolean;
-  session: any;  // 세션 데이터 타입을 정확히 정의할 수 있습니다.
-}
+
 // ✅ 회원가입
 export const signUp = async (
   email: string,

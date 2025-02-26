@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import apiClient from "./newApi";
 
 // 공통으로 사용할 accessToken을 세션에서 가져오는 함수
@@ -28,8 +29,12 @@ export const createReview = async (reviewData: {
       },
     });
     return response.data;
-  } catch (error: any) {
-    console.error("❌ 리뷰 생성 실패:", error.response ? error.response.data : error.message);
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      console.error("❌ 리뷰 생성 실패:", error.response ? error.response.data : error.message);
+    } else {
+      console.error("❌ 알 수 없는 오류 발생:", error);
+    }
     throw error;
   }
 };

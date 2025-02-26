@@ -67,6 +67,7 @@ export default function SignUpForm() {
       // 회원가입 후 사용자 정보 업데이트
       if (response?.user) {
         setUser({
+          id: String(response.user.id),          
           email: response.user.email, // API 응답에서 유저 정보 추출
           nickname: response.user.nickname,
           image: response.user.image || null,
@@ -92,7 +93,7 @@ export default function SignUpForm() {
           });
         }
   
-        if (errorMessage?.includes("닉네임")) {
+        if (errorMessage && errorMessage.includes("Internal")) {
           setError("nickname", {
             type: "manual",
             message: "😬 이미 사용 중인 닉네임입니다.",

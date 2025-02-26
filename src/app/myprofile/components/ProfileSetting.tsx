@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Button from "@/components/Button/button";
 import { Input, InputProfileImage } from "@/components/Input";
 
@@ -20,14 +20,7 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
   const [newNickname, setNewNickname] = useState<string>(nickname);
   const [newImage, setNewImage] = useState<string>(image);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-
-  // UseEffect를 사용하여 nickname과 image가 변경될 때 상태를 업데이트
-  useEffect(() => {
-    if (newNickname !== nickname) setNewNickname(nickname);
-    if (newImage !== image) setNewImage(image);
-  }, [nickname, image]);
   
-
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewNickname(e.target.value);
   };
@@ -48,8 +41,16 @@ const ProfileSetting: React.FC<ProfileSettingProps> = ({
         email, // 이메일은 변경되지 않으므로 그대로 전달
         image: newImage,
       });
-    } catch (error: any) {
-      console.error("❌ 프로필 업데이트 실패:", error);
+      setNewNickname(newNickname);
+      setNewImage(newImage);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        // Error 객체일 때만 처리
+        console.error("❌ 프로필 업데이트 실패:", error.message);
+      } else {
+        // 예외가 Error 객체가 아닐 때 처리 (예: 네트워크 오류 등)
+        console.error("❌ 프로필 업데이트 실패:", error);
+      }
     } finally {
       setIsUpdating(false);
     }
