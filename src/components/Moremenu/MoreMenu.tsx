@@ -4,8 +4,8 @@ import Dropdown from "@/components/Dropdown";
 import ModalTwoButton from "@/components/Modal/ModalTwoButton/ModalTwoButton";
 import ModalReviewAdd from "@/components/Modal/ModalReviewAdd/ModalReviewAdd";
 import ModalWineAdd from "@/components/Modal/ModalWineAdd/ModalWineAdd";
-import { deleteReview } from "@/lib/api/review";
-import { deleteWine, updateWine, WineData } from "@/lib/api/wine"; // ✅ WineData import
+import { deleteReview } from "@/lib/api/newReview"; // 🛑 수정함
+import { deleteWine, updateWine, WineData } from "@/lib/api/newWine"; // ✅ WineData import 🛑 수정함
 import { showToast } from "@/components/Toast/Toast";
 
 interface MoreMenuProps {
@@ -35,13 +35,15 @@ const MoreMenu: React.FC<MoreMenuProps> = ({
   const wineId = wineData?.id;
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("user_id");
+    const storedUserId = sessionStorage.getItem("userId"); // 🛑 수정한 부분
     if (storedUserId) {
       setLoggedInUserId(Number(storedUserId));
     }
   }, []);
 
   const isOwner = loggedInUserId === userId; // ✅ 본인 리뷰인지 확인
+  console.log("loggedInUserId:", loggedInUserId, "userId:", userId, "isOwner:", isOwner);
+
 
   const handleDelete = async () => {
     if (editType === "editWine" && !wineId) {

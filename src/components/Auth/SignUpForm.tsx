@@ -1,5 +1,6 @@
-"use client";
+"use client"
 
+import { useAuth } from "@/context/AuthProvider"; // ✅ 사용자 인증 상태
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,18 +11,16 @@ import Button from "@/components/Button/button";
 import { Input, InputPassword, Label } from "@/components/Input";
 import Link from "next/link";
 import Image from "next/image";
-
-import { signUp } from "@/lib/api/auth";
-import { useAuth } from "@/context/AuthProvider";
+import { signUp } from "@/lib/api/newAuth"; // ✅ 회원가입 API
 import { AxiosError } from "axios";
 
 export default function SignUpForm() {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth(); // ✅ useAuth에서 setUser를 가져옴
   const router = useRouter();
 
   useEffect(() => {
     if (user) {
-      router.push("/");
+      router.push("/"); // ✅ 로그인 상태면 홈으로 이동
     }
   }, [user, router]);
 
@@ -63,37 +62,49 @@ export default function SignUpForm() {
         data.password,
         data.passwordConfirmation
       );
-      console.log("회원가입 성공:", response);
+      console.log("✅ 회원가입 성공:", response);
+  
+      // 회원가입 후 사용자 정보 업데이트
+      if (response?.user) {
+        setUser({
+          id: String(response.user.id),          
+          email: response.user.email, // API 응답에서 유저 정보 추출
+          nickname: response.user.nickname,
+          image: response.user.image || null,
+        });
+      }
+  
+      // 홈으로 이동 후 새로고침하여 GNB 상태 갱신
       router.push("/");
+      setTimeout(() => {
+        router.refresh(); // 새로고침
+      }, 100); // 잠시 대기 후 새로고침을 시도해보세요.
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.error("회원가입 실패:", error.message);
+        console.error("❌ 회원가입 실패:", error.message);
         const errorMessage =
           error.response?.data?.message || error.response?.data?.error;
-        console.log("에러 메시지:", errorMessage);
-
-        // 이메일 중복 확인
-        if (errorMessage && errorMessage.includes("이메일")) {
+        console.log("⛔ 에러 메시지:", errorMessage);
+  
+        if (errorMessage?.includes("이메일")) {
           setError("email", {
             type: "manual",
             message: "😬 이미 사용 중인 이메일입니다.",
           });
         }
-
-        // 닉네임 중복 확인
+  
         if (errorMessage && errorMessage.includes("Internal")) {
-          if (!errors.nickname) {
-            setError("nickname", {
-              type: "manual",
-              message: "😬 이미 사용 중인 닉네임입니다.",
-            });
-          }
+          setError("nickname", {
+            type: "manual",
+            message: "😬 이미 사용 중인 닉네임입니다.",
+          });
         }
       } else {
-        console.error("알 수 없는 에러 발생:", error);
+        console.error("❌ 알 수 없는 에러 발생:", error);
       }
     }
   };
+  
 
   return (
     <form
@@ -131,17 +142,14 @@ export default function SignUpForm() {
           )}
         </div>
 
-        {/* 이메일이 유효하면 닉네임 필드 표시 (애니메이션 추가) */}
+        {/* 이메일이 유효하면 닉네임 필드 표시 */}
         {validity.email && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             onAnimationComplete={() => {
-              // 애니메이션이 끝난 후에 포커스 이동
-              if (validity.email) {
-                setFocus("nickname");
-              }
+              if (validity.email) setFocus("nickname");
             }}
           >
             <Label htmlFor="nickname">닉네임</Label>
@@ -160,17 +168,14 @@ export default function SignUpForm() {
           </motion.div>
         )}
 
-        {/* 닉네임이 유효하면 비밀번호 입력 (애니메이션 추가) */}
+        {/* 닉네임이 유효하면 비밀번호 입력 */}
         {validity.nickname && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             onAnimationComplete={() => {
-              // 애니메이션이 끝난 후에 포커스 이동
-              if (validity.nickname) {
-                setFocus("password");
-              }
+              if (validity.nickname) setFocus("password");
             }}
           >
             <Label htmlFor="password">비밀번호</Label>
@@ -189,17 +194,14 @@ export default function SignUpForm() {
           </motion.div>
         )}
 
-        {/* 비밀번호 유효하면 비밀번호 입력 (애니메이션 추가) */}
+        {/* 비밀번호가 유효하면 비밀번호 확인 입력 */}
         {validity.password && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             onAnimationComplete={() => {
-              // 애니메이션이 끝난 후에 포커스 이동
-              if (validity.password) {
-                setFocus("passwordConfirmation");
-              }
+              if (validity.password) setFocus("passwordConfirmation");
             }}
           >
             <Label htmlFor="passwordConfirmation">비밀번호 확인</Label>

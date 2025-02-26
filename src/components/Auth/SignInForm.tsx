@@ -1,20 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
+import { signIn, SignInResponse } from "next-auth/react"; // ✅ NextAuth의 signIn 사용
 import { signInSchema, SignInSchema } from "@/app/schemas/auth";
 import Button from "@/components/Button/button";
 import { Input, InputPassword, Label } from "@/components/Input";
 import Icon from "@/components/Icon/Icon";
-import { signIn } from "@/lib/api/auth";
-import { signInWithKakao } from "@/lib/api/kakaoAuth";
-import { getKakaoAuthUrl } from "@/utils/kakaoAuth";
 
+interface SignInResponseWithUser extends SignInResponse {
+  user: {
+    id: number; // id를 추가
+    email: string;
+    nickname: string;
+    teamId: string;
+    updatedAt: string;
+    createdAt: string;
+    image: string | null;
+    accessToken: string; 
+    refreshToken: string; 
+  };
+}
 export default function SignInForm() {
   const {
     register,
@@ -28,82 +39,56 @@ export default function SignInForm() {
     resolver: zodResolver(signInSchema),
   });
 
-  const [validity, setValidity] = useState({
-    email: false,
-    password: false,
-  });
-
-  const [isMounted, setIsMounted] = useState(false);
+  const [validity, setValidity] = useState({ email: false, password: false });
   const router = useRouter();
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const handleValidate = async (field: "email" | "password") => {
     const isValid = await trigger(field);
     if (isValid) {
-      setValidity((prevValidity) => ({
-        ...prevValidity,
-        [field]: true,
-      }));
+      setValidity((prevValidity) => ({ ...prevValidity, [field]: true }));
     }
   };
 
   const onSubmit = async (data: SignInSchema) => {
-    try {
-      const response = await signIn(data.email, data.password);
-      console.log("로그인 성공:", response);
+    console.log("로그인 요청 데이터:", data); // 데이터 확인용 로그 추가
 
-      if (isMounted) {
-        router.push("/");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error("로그인 실패:", error.message);
-        setError("email", {
-          type: "manual",
-          message: "👀 이메일 혹은 비밀번호를 확인해주세요.",
-        });
-      } else {
-        console.error("알 수 없는 에러 발생:", error);
+    const result = await signIn("credentials", {
+      redirect: false, // ✅ 직접 리다이렉트하지 않도록 설정
+      email: data.email,
+      password: data.password,
+    }) as SignInResponseWithUser;
+    console.log("로그인 응답 결과:", result); // 응답 확인용 로그 추가
+
+    if (result?.error) {
+      console.error("로그인 실패:", result.error);
+      setError("email", { type: "manual", message: "👀 이메일 혹은 비밀번호를 확인해주세요." });
+    } else {
+      const user = result?.user;
+      if (user) {
+        // user가 존재하면 세션스토리지에 토큰을 저장
+        sessionStorage.setItem("accessToken", user.accessToken); 
+        sessionStorage.setItem("refreshToken", user.refreshToken);
+        sessionStorage.setItem("userId", user.id.toString()); // user.id를 sessionStorage에 저장
+        
+        console.log("토큰 저장 완료");
+        console.log("세션에 저장된 ID:", sessionStorage.getItem("userId"));
+
+        router.push("/"); // 로그인 후 홈 페이지로 리디렉션
       }
     }
   };
 
-  const handleKakaoLogin = () => {
-    const kakaoAuthUrl = getKakaoAuthUrl();
-    window.location.href = kakaoAuthUrl;
-  };
-
-  // 카카오 인증 후 redirect URI에서 code 파라미터를 받아오는 useEffect
-  useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get("code"); // window.location.search 사용
-    if (code) {
-      const getKakaoToken = async () => {
-        try {
-          const response = await signInWithKakao(code); // 백엔드에서 카카오 토큰 받아오기
-          console.log("카카오 로그인 성공:", response);
-
-          if (isMounted) {
-            router.push("/");
-          }
-        } catch (error) {
-          if (error instanceof Error) {
-            console.error("카카오 로그인 실패:", error.message);
-          } else {
-            console.error("알 수 없는 에러 발생:", error);
-          }
-        }
-      };
-
-      getKakaoToken();
+  const handleKakaoLogin = async () => {
+    const result = await signIn("kakao", {
+      redirect: false, // ✅ 카카오 로그인 후 리다이렉트하지 않도록 설정
+    });
+    if (result?.error) {
+      console.error("카카오 로그인 실패:", result.error);
+    } else {
+      // 카카오 로그인 성공 후 홈으로 리다이렉트
+      router.push("/");
     }
-  }, [isMounted, router]);
-
-  if (!isMounted) {
-    return null;
-  }
+  };
 
   return (
     <form
@@ -122,7 +107,6 @@ export default function SignInForm() {
         </Link>
       </h1>
 
-      {/* 이메일 입력 필드 */}
       <article className="flex flex-col gap-[16px] md:gap-[25px] w-full mt-[16px] md:mt-[8px]">
         <div>
           <Label htmlFor="email">이메일</Label>
@@ -141,18 +125,12 @@ export default function SignInForm() {
           )}
         </div>
 
-        {/* 비밀번호 입력 */}
         {validity.email && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            onAnimationComplete={() => {
-              // 애니메이션이 끝난 후에 포커스 이동
-              if (validity.email) {
-                setFocus("password");
-              }
-            }}
+            onAnimationComplete={() => setFocus("password")}
           >
             <Label htmlFor="password">비밀번호</Label>
             <InputPassword
@@ -170,6 +148,7 @@ export default function SignInForm() {
           </motion.div>
         )}
       </article>
+
       <section className="flex flex-col gap-[16px] w-full">
         <Button
           variant="button"
@@ -184,12 +163,7 @@ export default function SignInForm() {
           className="w-full h-[48px] md:h-[50px] text-lg-16px-medium hover:bg-yellow-300 hover:border-none hover:text-yellow-950"
           onClick={handleKakaoLogin}
         >
-          <Icon
-            name="kakao"
-            size={20}
-            viewBox="0 0 24 24"
-            className="md:w-[24px] md:h-[24px] hover:text-yellow-950"
-          />
+          <Icon name="kakao" size={20} viewBox="0 0 24 24" />
           Kakao로 시작하기
         </Button>
       </section>

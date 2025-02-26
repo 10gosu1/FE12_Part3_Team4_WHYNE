@@ -1,7 +1,7 @@
 "use client";
 import MoreMenu from "@/components/Moremenu/MoreMenu";
 import Image from "next/image";
-import { WineData } from "@/lib/api/wine"; // WineData 가져오기
+import { WineData } from "@/lib/api/newWine"; // WineData 가져오기 🛑 수정한 부분
 
 // ✅ WineDataWithUserId 타입 정의 (WineData를 확장)
 interface WineDataWithUserId extends WineData {

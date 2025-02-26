@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { fetchWines, createWine } from "@/lib/api/wine";
+import { useCallback, useEffect, useState } from "react";
+import { fetchWines, createWine } from "@/lib/api/newWine"; // 🛑 수정함
 import { useAuth } from "@/context/AuthProvider";
 import WineCard from "./WineCard";
 import WineTypeSelector from "@/components/filter/WineTypeSelector";
@@ -66,8 +66,8 @@ export default function WineList() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // ✅ 와인 목록 불러오기 (새로운 방식)
-  const loadWines = async () => {
+  // ✅ useCallback을 사용하여 loadWines 함수 메모이제이션 🛑 수정함
+  const loadWines = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetchWines({
@@ -97,11 +97,12 @@ export default function WineList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedType, minPrice, maxPrice, selectedRating]);
+
 
   useEffect(() => {
     loadWines();
-  }, [selectedType, minPrice, maxPrice, selectedRating]);
+  }, [loadWines]); // 의존성 배열에 loadWines 추가
 
   // ✅ 와인 추가 후 리스트 업데이트
   const handleAddWine = async (wineData: {
@@ -125,7 +126,7 @@ export default function WineList() {
       // ✅ API 요청 데이터 확인 (id, avgRating 없는지 체크)
       console.log("📤 API 요청 데이터:", wineData);
       const createdWine = await createWine(validWineData);
-      showToast("🍷 새로운 와인이 등록되었습니다.");
+      showToast("새로운 와인이 등록되었습니다.", "success");
       setWines((prevWines) => [
         {
           ...createdWine,

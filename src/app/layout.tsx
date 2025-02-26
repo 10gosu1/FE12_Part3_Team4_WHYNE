@@ -1,8 +1,8 @@
+
 import localFont from "next/font/local";
 import MetaTags from "./MetaTags";
 import "@/styles/globals.css";
-import { OAuthAppProvider } from "@/context/OAuthAppProvider";
-import { AuthProvider } from "@/context/AuthProvider";
+import ClientLayout from "./ClientLayout"; // 클라이언트 컴포넌트 임포트
 
 const pretendard = localFont({
   src: "../../public/fonts/PretendardVariable.woff2",
@@ -25,9 +25,7 @@ export default function RootLayout({
         <title>WHYNE</title>
       </head>
       <body>
-        <OAuthAppProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </OAuthAppProvider>
+        <ClientLayout>{children}</ClientLayout> {/* 클라이언트 컴포넌트 감싸기 */}
       </body>
     </html>
   );

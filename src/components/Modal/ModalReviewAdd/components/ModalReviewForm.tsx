@@ -6,10 +6,12 @@ import ModalReviewSmell from "./ModalReviewSmell";
 import ModalReviewHeader from "./ModalReviewHeader";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { fetchWineById } from "@/lib/api/wine";
-import { createReview, fetchReviewById, updateReview } from "@/lib/api/review";
+import { fetchWineById } from "@/lib/api/newWine"; // 🛑 수정함
+import { createReview, fetchReviewById, updateReview } from "@/lib/api/newReview"; // 🛑 수정함
 import { AxiosError } from "axios";
 import { showToast } from "@/components/Toast/Toast";
+import { useSession } from "next-auth/react"; // 🛑 수정함
+
 
 // 1.와인 리뷰에 필요한 값들을 상태값으로 정리.
 // 2.(rating,content)값은 ModalReviewRate컴포넌트 / (lightBold, smoothTannic, drySweet, softAcidic)값은 ModalReviewFlavor 컴포넌트 / (aroma[])값은 ModalReviewSmell 컴포넌트
@@ -42,6 +44,9 @@ export default function ModalReviewForm({
   initialReviewId,
   initialWineId,
 }: ModalReviewFormProps) {
+
+  const { data: session } = useSession(); // 🛑 수정함
+
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [reviewId, setReviewId] = useState<number | null>(
     initialReviewId ?? null
@@ -79,8 +84,9 @@ export default function ModalReviewForm({
     wineId: 0,
   });
 
-  const { id } = useParams();
-  const paramWineId = Array.isArray(id) ? id[0] : id; //변수중복 방지
+  const params = useParams(); // 🛑 수정함
+
+  const paramWineId = params && params.id ? (Array.isArray(params.id) ? Number(params.id[0]) : Number(params.id)) : null;
 
   // 버튼 비활성화
   const disabled = !(values.rating && values.content);
@@ -90,11 +96,12 @@ export default function ModalReviewForm({
     if (initialWineId) {
       setWineId(initialWineId);
     } else if (paramWineId) {
-      console.log("🔄 paramWineId 사용:", paramWineId);
+      console.log()
       setWineId(Number(paramWineId)); // ✅ paramWineId를 wineId로 설정
     }
   }, [initialWineId, paramWineId]);
 
+  
   const fetchReviewData = useCallback(
     async (reviewId: number) => {
       if (!reviewId || !isEditMode) return;
@@ -174,6 +181,12 @@ export default function ModalReviewForm({
 
   // ✅ 리뷰 저장 & 수정 API 요청
   const onSubmit = async () => {
+
+    if (!session || !session.user?.id) { // 🛑 수정함
+      alert("로그인 상태를 확인해주세요.");
+      return;
+    }
+
     if (!wine.id || wine.id === 0) {
       console.log("wine.id=", wine.id);
       alert("와인 정보를 불러오는 중입니다. 잠시만 기다려 주세요.");

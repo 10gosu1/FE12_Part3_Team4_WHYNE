@@ -12,7 +12,7 @@ const KakaoCallback = () => {
   const [code, setCode] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchedCode = searchParams.get("code");
+    const fetchedCode = searchParams?.get("code");
     if (fetchedCode) {
       setCode(fetchedCode);
     } else {
